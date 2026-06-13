@@ -30,6 +30,7 @@ import { getServices } from '@/services';
 import { useFinanceStore } from '@/store/finance.store';
 import type { Category, CategoryKind, NewCategory } from '@/data/models';
 import { useT } from '@/i18n/useT';
+import { iconForCategory } from '@/lib/categoryIcons';
 
 const COLORS = ['#f59e0b', '#3b82f6', '#ec4899', '#ef4444', '#8b5cf6', '#10b981', '#06b6d4', '#6b7280'];
 
@@ -107,17 +108,14 @@ export default function CategoriesPage() {
   const renderList = (items: Category[]) =>
     items.map((c) => (
       <IonItemSliding key={c.id}>
-        <IonItem button onClick={() => openEdit(c)}>
-          <span
+        <IonItem button className="tx-item" onClick={() => openEdit(c)}>
+          <div
+            className="cat-avatar"
             slot="start"
-            style={{
-              width: 16,
-              height: 16,
-              borderRadius: 8,
-              background: c.color ?? '#ccc',
-              display: 'inline-block',
-            }}
-          />
+            style={{ background: c.color ?? '#94a3b8' }}
+          >
+            <IonIcon icon={iconForCategory(c.icon)} />
+          </div>
           <IonLabel>{c.name}</IonLabel>
         </IonItem>
         <IonItemOptions side="end">
@@ -142,7 +140,7 @@ export default function CategoriesPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonList>
+        <IonList lines="none">
           <IonListHeader>
             <IonLabel>{tr('cat.kind.expense')}</IonLabel>
           </IonListHeader>

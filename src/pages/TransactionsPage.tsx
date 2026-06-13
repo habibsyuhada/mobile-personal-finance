@@ -29,6 +29,7 @@ import type { Transaction, TransactionType } from '@/data/models';
 import TransactionForm from '@/features/transactions/TransactionForm';
 import { useT } from '@/i18n/useT';
 import { useSettingsStore } from '@/store/settings.store';
+import { iconForCategory, colorForCategory, transferIcon } from '@/lib/categoryIcons';
 
 type FilterType = 'all' | TransactionType;
 
@@ -55,6 +56,7 @@ export default function TransactionsPage() {
 
   const catName = (id?: string | null) =>
     categories.find((c) => c.id === id)?.name ?? tr('dashboard.noCategory');
+  const cat = (id?: string | null) => categories.find((c) => c.id === id);
   const accName = (id?: string | null) => accounts.find((a) => a.id === id)?.name ?? '-';
 
   const visible = useMemo(() => {
@@ -134,43 +136,53 @@ export default function TransactionsPage() {
             <p>{tr('tx.empty')}</p>
           </div>
         ) : (
-          <IonList>
-            {visible.map((t) => (
-              <IonItemSliding key={t.id}>
-                <IonItem button onClick={() => openEdit(t)}>
-                  <IonLabel>
-                    <h2>{t.type === 'transfer' ? tr('common.transfer') : catName(t.categoryId)}</h2>
-                    <p>
-                      {accName(t.accountId)}
-                      {t.type === 'transfer' ? ` → ${accName(t.toAccountId)}` : ''} ·{' '}
-                      {formatDate(t.occurredAt, locale)}
-                    </p>
-                    {t.note && <p>{t.note}</p>}
-                  </IonLabel>
-                  <span
-                    slot="end"
-                    className={
-                      t.type === 'income'
-                        ? 'amount-income'
-                        : t.type === 'expense'
-                          ? 'amount-expense'
-                          : ''
-                    }
-                  >
-                    {t.type === 'income' ? '+' : t.type === 'expense' ? '-' : ''}
-                    {fmt(t.amount)}
-                  </span>
-                </IonItem>
-                <IonItemOptions side="end">
-                  <IonItemOption onClick={() => openEdit(t)}>
-                    <IonIcon slot="icon-only" icon={editIcon} />
-                  </IonItemOption>
-                  <IonItemOption color="danger" onClick={() => handleDelete(t)}>
-                    <IonIcon slot="icon-only" icon={trash} />
-                  </IonItemOption>
-                </IonItemOptions>
-              </IonItemSliding>
-            ))}
+          <IonList lines="none">
+            {visible.map((t) => {
+              const c = cat(t.categoryId);
+              const isTransfer = t.type === 'transfer';
+              const avatarColor = isTransfer
+                ? 'var(--ion-color-primary)'
+                : colorForCategory(c?.color);
+              return (
+                <IonItemSliding key={t.id}>
+                  <IonItem button className="tx-item" onClick={() => openEdit(t)}>
+                    <div className="cat-avatar" slot="start" style={{ background: avatarColor }}>
+                      <IonIcon icon={isTransfer ? transferIcon : iconForCategory(c?.icon)} />
+                    </div>
+                    <IonLabel>
+                      <h2>{isTransfer ? tr('common.transfer') : catName(t.categoryId)}</h2>
+                      <p>
+                        {accName(t.accountId)}
+                        {isTransfer ? ` → ${accName(t.toAccountId)}` : ''} ·{' '}
+                        {formatDate(t.occurredAt, locale)}
+                      </p>
+                      {t.note && <p>{t.note}</p>}
+                    </IonLabel>
+                    <span
+                      slot="end"
+                      className={
+                        t.type === 'income'
+                          ? 'amount-income'
+                          : t.type === 'expense'
+                            ? 'amount-expense'
+                            : ''
+                      }
+                    >
+                      {t.type === 'income' ? '+' : t.type === 'expense' ? '-' : ''}
+                      {fmt(t.amount)}
+                    </span>
+                  </IonItem>
+                  <IonItemOptions side="end">
+                    <IonItemOption onClick={() => openEdit(t)}>
+                      <IonIcon slot="icon-only" icon={editIcon} />
+                    </IonItemOption>
+                    <IonItemOption color="danger" onClick={() => handleDelete(t)}>
+                      <IonIcon slot="icon-only" icon={trash} />
+                    </IonItemOption>
+                  </IonItemOptions>
+                </IonItemSliding>
+              );
+            })}
           </IonList>
         )}
         <div style={{ height: 80 }} />

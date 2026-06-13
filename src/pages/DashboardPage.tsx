@@ -7,9 +7,6 @@ import {
   IonToolbar,
   IonCard,
   IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
   IonList,
   IonItem,
   IonLabel,
@@ -20,12 +17,8 @@ import {
   IonSegment,
   IonSegmentButton,
 } from '@ionic/react';
-import {
-  arrowDownCircle,
-  arrowUpCircle,
-  walletOutline,
-  chevronForward,
-} from 'ionicons/icons';
+import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
+import { iconForCategory, colorForCategory, transferIcon } from '@/lib/categoryIcons';
 import { useFinanceStore } from '@/store/finance.store';
 import { getServices } from '@/services';
 import { useFormatMoney } from '@/lib/useFormatMoney';
@@ -56,6 +49,7 @@ export default function DashboardPage() {
 
   const catName = (id?: string | null) =>
     categories.find((c) => c.id === id)?.name ?? tr('dashboard.noCategory');
+  const cat = (id?: string | null) => categories.find((c) => c.id === id);
   const accName = (id?: string | null) =>
     accounts.find((a) => a.id === id)?.name ?? '-';
 
@@ -63,7 +57,7 @@ export default function DashboardPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader className="ion-no-border">
         <IonToolbar>
           <IonTitle>{tr('dashboard.title')}</IonTitle>
         </IonToolbar>
@@ -73,18 +67,21 @@ export default function DashboardPage() {
           <IonRefresherContent />
         </IonRefresher>
 
-        <IonCard className="net-worth-card" color="primary">
-          <IonCardHeader>
-            <IonCardSubtitle style={{ color: 'rgba(255,255,255,0.85)' }}>
+        <div className="net-worth-card">
+          <div style={{ padding: '22px 24px', position: 'relative', zIndex: 1 }}>
+            <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 500 }}>
               {tr('dashboard.netWorth')}
-            </IonCardSubtitle>
-            <IonCardTitle style={{ color: '#fff', fontSize: 28 }}>
+            </div>
+            <div style={{ color: '#fff', fontSize: 32, fontWeight: 800, marginTop: 4, letterSpacing: '-0.5px' }}>
               {fmt(netWorth)}
-            </IonCardTitle>
-          </IonCardHeader>
-        </IonCard>
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: 8 }}>
+              {tr('dashboard.accounts', { count: accounts.length })}
+            </div>
+          </div>
+        </div>
 
-        <div style={{ padding: '0 16px' }}>
+        <div style={{ padding: '4px 16px' }}>
           <IonSegment value={period} onIonChange={(e) => setPeriod(e.detail.value as PeriodType)}>
             <IonSegmentButton value="week">
               <IonLabel>{tr('period.week')}</IonLabel>
@@ -99,32 +96,28 @@ export default function DashboardPage() {
         </div>
 
         <div className="summary-grid" style={{ padding: 16 }}>
-          <IonCard style={{ margin: 0 }}>
+          <IonCard className="summary-card">
             <IonCardContent>
-              <IonIcon icon={arrowDownCircle} style={{ color: 'var(--app-income)', fontSize: 24 }} />
-              <div style={{ fontSize: 12, color: 'var(--ion-color-medium)' }}>{tr('dashboard.income')}</div>
-              <div className="amount-income">{fmt(totals.income)}</div>
+              <div className="summary-icon income">
+                <IonIcon icon={arrowDownOutline} style={{ color: 'var(--app-income)', fontSize: 20 }} />
+              </div>
+              <div className="summary-label">{tr('dashboard.income')}</div>
+              <div className="summary-value amount-income">{fmt(totals.income)}</div>
             </IonCardContent>
           </IonCard>
-          <IonCard style={{ margin: 0 }}>
+          <IonCard className="summary-card">
             <IonCardContent>
-              <IonIcon icon={arrowUpCircle} style={{ color: 'var(--app-expense)', fontSize: 24 }} />
-              <div style={{ fontSize: 12, color: 'var(--ion-color-medium)' }}>{tr('dashboard.expense')}</div>
-              <div className="amount-expense">{fmt(totals.expense)}</div>
+              <div className="summary-icon expense">
+                <IonIcon icon={arrowUpOutline} style={{ color: 'var(--app-expense)', fontSize: 20 }} />
+              </div>
+              <div className="summary-label">{tr('dashboard.expense')}</div>
+              <div className="summary-value amount-expense">{fmt(totals.expense)}</div>
             </IonCardContent>
           </IonCard>
         </div>
 
-        <IonList>
-          <IonItem button routerLink="/tabs/accounts">
-            <IonIcon icon={walletOutline} slot="start" />
-            <IonLabel>{tr('dashboard.accounts', { count: accounts.length })}</IonLabel>
-            <IonIcon icon={chevronForward} slot="end" />
-          </IonItem>
-        </IonList>
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px' }}>
-          <h3 style={{ margin: 0 }}>{tr('dashboard.recent')}</h3>
+        <div className="section-head">
+          <h3>{tr('dashboard.recent')}</h3>
           <IonButton fill="clear" size="small" routerLink="/tabs/transactions">
             {tr('common.viewAll')}
           </IonButton>
@@ -135,32 +128,46 @@ export default function DashboardPage() {
             <p>{tr('dashboard.empty')}</p>
           </div>
         ) : (
-          <IonList>
-            {recent.map((t) => (
-              <IonItem key={t.id} routerLink="/tabs/transactions">
-                <IonLabel>
-                  <h2>{t.type === 'transfer' ? tr('common.transfer') : catName(t.categoryId)}</h2>
-                  <p>
-                    {accName(t.accountId)}
-                    {t.type === 'transfer' ? ` → ${accName(t.toAccountId)}` : ''} ·{' '}
-                    {formatDate(t.occurredAt, locale)}
-                  </p>
-                </IonLabel>
-                <span
-                  slot="end"
-                  className={
-                    t.type === 'income'
-                      ? 'amount-income'
-                      : t.type === 'expense'
-                        ? 'amount-expense'
-                        : ''
-                  }
-                >
-                  {t.type === 'income' ? '+' : t.type === 'expense' ? '-' : ''}
-                  {fmt(t.amount)}
-                </span>
-              </IonItem>
-            ))}
+          <IonList lines="none">
+            {recent.map((t) => {
+              const c = cat(t.categoryId);
+              const isTransfer = t.type === 'transfer';
+              const avatarColor = isTransfer
+                ? 'var(--ion-color-primary)'
+                : colorForCategory(c?.color);
+              return (
+                <IonItem key={t.id} className="tx-item" routerLink="/tabs/transactions">
+                  <div
+                    className="cat-avatar"
+                    slot="start"
+                    style={{ background: avatarColor }}
+                  >
+                    <IonIcon icon={isTransfer ? transferIcon : iconForCategory(c?.icon)} />
+                  </div>
+                  <IonLabel>
+                    <h2>{isTransfer ? tr('common.transfer') : catName(t.categoryId)}</h2>
+                    <p>
+                      {accName(t.accountId)}
+                      {isTransfer ? ` → ${accName(t.toAccountId)}` : ''} ·{' '}
+                      {formatDate(t.occurredAt, locale)}
+                    </p>
+                  </IonLabel>
+                  <span
+                    slot="end"
+                    className={
+                      t.type === 'income'
+                        ? 'amount-income'
+                        : t.type === 'expense'
+                          ? 'amount-expense'
+                          : ''
+                    }
+                  >
+                    {t.type === 'income' ? '+' : t.type === 'expense' ? '-' : ''}
+                    {fmt(t.amount)}
+                  </span>
+                </IonItem>
+              );
+            })}
           </IonList>
         )}
         <div style={{ height: 24 }} />

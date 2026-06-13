@@ -24,7 +24,7 @@ import {
   IonItemOption,
   useIonAlert,
 } from '@ionic/react';
-import { add, trash, create as editIcon } from 'ionicons/icons';
+import { add, trash, create as editIcon, cash, card, phonePortrait, wallet } from 'ionicons/icons';
 import { useFinanceStore } from '@/store/finance.store';
 import { useSettingsStore } from '@/store/settings.store';
 import { useFormatMoney } from '@/lib/useFormatMoney';
@@ -38,6 +38,20 @@ const TYPE_KEYS: Record<AccountType, 'acc.type.cash' | 'acc.type.bank' | 'acc.ty
   bank: 'acc.type.bank',
   ewallet: 'acc.type.ewallet',
   other: 'acc.type.other',
+};
+
+const TYPE_ICON: Record<AccountType, string> = {
+  cash,
+  bank: card,
+  ewallet: phonePortrait,
+  other: wallet,
+};
+
+const TYPE_COLOR: Record<AccountType, string> = {
+  cash: '#16a34a',
+  bank: '#6366f1',
+  ewallet: '#0ea5e9',
+  other: '#94a3b8',
 };
 
 export default function AccountsPage() {
@@ -149,15 +163,18 @@ export default function AccountsPage() {
             <p>{tr('acc.empty')}</p>
           </div>
         ) : (
-          <IonList>
+          <IonList lines="none">
             {accounts.map((a) => (
               <IonItemSliding key={a.id}>
-                <IonItem button onClick={() => openEdit(a)}>
+                <IonItem button className="tx-item" onClick={() => openEdit(a)}>
+                  <div className="cat-avatar" slot="start" style={{ background: TYPE_COLOR[a.type] }}>
+                    <IonIcon icon={TYPE_ICON[a.type]} />
+                  </div>
                   <IonLabel>
                     <h2>{a.name}</h2>
                     <p>{tr(TYPE_KEYS[a.type])}</p>
                   </IonLabel>
-                  <span slot="end">{fmt(balances[a.id] ?? 0)}</span>
+                  <span slot="end" style={{ fontWeight: 700 }}>{fmt(balances[a.id] ?? 0)}</span>
                 </IonItem>
                 <IonItemOptions side="end">
                   <IonItemOption onClick={() => openEdit(a)}>

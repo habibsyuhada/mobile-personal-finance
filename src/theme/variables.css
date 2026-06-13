@@ -1,53 +1,264 @@
-/* Tema kustom aplikasi. Mengandalkan variabel Ionic.
-   Dark mode di-toggle via kelas .ion-palette-dark pada <html>. */
+/* ============================================================
+   Tema kustom aplikasi — modern, lembut, dengan dark mode.
+   Dark mode di-toggle via kelas .ion-palette-dark pada <html>.
+   ============================================================ */
 
 :root {
-  --ion-color-primary: #2563eb;
-  --ion-color-primary-rgb: 37, 99, 235;
+  /* Brand: indigo/violet modern */
+  --ion-color-primary: #6366f1;
+  --ion-color-primary-rgb: 99, 102, 241;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #2157cf;
-  --ion-color-primary-tint: #3b73ed;
+  --ion-color-primary-shade: #585ad4;
+  --ion-color-primary-tint: #7375f2;
+
+  --ion-color-secondary: #0ea5e9;
+  --ion-color-secondary-rgb: 14, 165, 233;
+  --ion-color-secondary-contrast: #ffffff;
 
   --ion-color-success: #16a34a;
-  --ion-color-danger: #dc2626;
-  --ion-color-warning: #d97706;
+  --ion-color-success-rgb: 22, 163, 74;
+  --ion-color-danger: #ef4444;
+  --ion-color-danger-rgb: 239, 68, 68;
+  --ion-color-warning: #f59e0b;
+  --ion-color-warning-rgb: 245, 158, 11;
 
+  /* App accents */
   --app-income: #16a34a;
-  --app-expense: #dc2626;
+  --app-expense: #ef4444;
+  --app-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  --app-gradient-success: linear-gradient(135deg, #10b981 0%, #16a34a 100%);
+
+  /* Surfaces (light) */
+  --ion-background-color: #f4f5fb;
+  --ion-background-color-rgb: 244, 245, 251;
+  --ion-text-color: #1e2235;
+  --ion-text-color-rgb: 30, 34, 53;
+  --ion-toolbar-background: #ffffff;
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
+
+  --app-card-radius: 20px;
+  --app-shadow: 0 6px 24px rgba(30, 34, 53, 0.08);
+  --app-shadow-soft: 0 2px 10px rgba(30, 34, 53, 0.05);
+
+  --ion-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
 }
 
+/* Dark palette */
+.ion-palette-dark {
+  --ion-background-color: #0f1117;
+  --ion-background-color-rgb: 15, 17, 23;
+  --ion-text-color: #e7e9f3;
+  --ion-text-color-rgb: 231, 233, 243;
+  --ion-toolbar-background: #171a23;
+  --ion-item-background: #171a23;
+  --ion-card-background: #171a23;
+  --ion-color-step-50: #1c1f2a;
+  --ion-color-step-100: #232735;
+  --app-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  --app-shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- Toolbar / header ---------- */
+ion-toolbar {
+  --border-width: 0 !important;
+  --border-color: transparent;
+}
+ion-header.header-md::after {
+  display: none; /* buang garis bawah header bawaan MD */
+}
+ion-title {
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+/* ---------- Cards ---------- */
+ion-card {
+  border-radius: var(--app-card-radius);
+  box-shadow: var(--app-shadow-soft);
+  margin: 12px 16px;
+}
+
+/* ---------- Amount colors ---------- */
 .amount-income {
   color: var(--app-income);
-  font-weight: 600;
+  font-weight: 700;
 }
-
 .amount-expense {
   color: var(--app-expense);
-  font-weight: 600;
+  font-weight: 700;
 }
 
+/* ---------- Hero net-worth card ---------- */
 .net-worth-card {
   margin: 16px;
-  border-radius: 16px;
+  border-radius: 24px;
+  background: var(--app-gradient);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+.net-worth-card::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -30px;
+  width: 160px;
+  height: 160px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+}
+.net-worth-card::before {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: -20px;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
 }
 
+/* ---------- Summary grid ---------- */
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+.summary-card {
+  margin: 0 !important;
+  border-radius: 18px;
+}
+.summary-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.summary-icon.income {
+  background: rgba(22, 163, 74, 0.12);
+}
+.summary-icon.expense {
+  background: rgba(239, 68, 68, 0.12);
+}
+.summary-label {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  margin-bottom: 2px;
+}
+.summary-value {
+  font-size: 18px;
+  font-weight: 700;
+}
 
+/* ---------- Category avatar ---------- */
+.cat-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.cat-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  display: inline-block;
+}
+
+/* ---------- List items ---------- */
+ion-item {
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+}
+.tx-item h2 {
+  font-weight: 600;
+  font-size: 15px;
+}
+.tx-item p {
+  font-size: 13px;
+  color: var(--ion-color-medium);
+}
+
+/* ---------- Section heading ---------- */
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px 4px;
+}
+.section-head h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ---------- Empty state ---------- */
 .center-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px;
+  padding: 56px 28px;
   text-align: center;
   color: var(--ion-color-medium);
 }
+.center-empty h2 {
+  font-weight: 700;
+  margin: 12px 0 6px;
+}
 
-.fab-scan {
-  --background: var(--ion-color-primary);
+/* ---------- Segment (pill style) ---------- */
+ion-segment {
+  --background: rgba(var(--ion-text-color-rgb), 0.06);
+  border-radius: 14px;
+  padding: 4px;
+}
+ion-segment-button {
+  --border-radius: 10px;
+  --indicator-color: var(--ion-card-background);
+  --color: var(--ion-color-medium);
+  --color-checked: var(--ion-color-primary);
+  min-height: 36px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---------- FAB ---------- */
+ion-fab-button {
+  --box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* ---------- Tab bar ---------- */
+ion-tab-bar {
+  --background: var(--ion-toolbar-background);
+  border-top: 1px solid rgba(var(--ion-text-color-rgb), 0.06);
+  height: 60px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+ion-tab-button {
+  --color: var(--ion-color-medium);
+  --color-selected: var(--ion-color-primary);
+}
+ion-tab-button ion-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ---------- Progress bar (budget) ---------- */
+ion-progress-bar {
+  height: 8px;
+  border-radius: 6px;
+  --background: rgba(var(--ion-text-color-rgb), 0.08);
 }

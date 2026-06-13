@@ -31,6 +31,7 @@ import { toMinor, parseAmount } from '@/lib/currency';
 import { monthKey } from '@/lib/date';
 import type { BudgetProgress } from '@/services/budget.service';
 import { useT } from '@/i18n/useT';
+import { iconForCategory } from '@/lib/categoryIcons';
 
 export default function BudgetsPage() {
   const categories = useFinanceStore((s) => s.categories);
@@ -47,6 +48,7 @@ export default function BudgetsPage() {
 
   const expenseCats = categories.filter((c) => c.kind === 'expense');
   const catName = (id: string) => categories.find((c) => c.id === id)?.name ?? '-';
+  const cat = (id: string) => categories.find((c) => c.id === id);
 
   const load = useCallback(async () => {
     setProgress(await getServices().budgets.progress(period));
@@ -97,22 +99,32 @@ export default function BudgetsPage() {
             <p>{tr('budget.empty')}</p>
           </div>
         ) : (
-          <IonList>
-            {progress.map((p) => (
-              <IonItem key={p.budget.id}>
-                <IonLabel>
-                  <h2>{catName(p.budget.categoryId)}</h2>
-                  <IonProgressBar
-                    value={Math.min(p.ratio, 1)}
-                    color={colorFor(p.status)}
-                    style={{ margin: '8px 0' }}
-                  />
-                  <IonNote>
-                    {fmt(p.spent)} / {fmt(p.budget.amountLimit)} ({Math.round(p.ratio * 100)}%)
-                  </IonNote>
-                </IonLabel>
-              </IonItem>
-            ))}
+          <IonList lines="none">
+            {progress.map((p) => {
+              const c = cat(p.budget.categoryId);
+              return (
+                <IonItem key={p.budget.id} className="tx-item">
+                  <div
+                    className="cat-avatar"
+                    slot="start"
+                    style={{ background: c?.color ?? '#94a3b8' }}
+                  >
+                    <IonIcon icon={iconForCategory(c?.icon)} />
+                  </div>
+                  <IonLabel>
+                    <h2>{catName(p.budget.categoryId)}</h2>
+                    <IonProgressBar
+                      value={Math.min(p.ratio, 1)}
+                      color={colorFor(p.status)}
+                      style={{ margin: '8px 0' }}
+                    />
+                    <IonNote>
+                      {fmt(p.spent)} / {fmt(p.budget.amountLimit)} ({Math.round(p.ratio * 100)}%)
+                    </IonNote>
+                  </IonLabel>
+                </IonItem>
+              );
+            })}
           </IonList>
         )}
 
