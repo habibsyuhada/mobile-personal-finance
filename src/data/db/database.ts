@@ -4,7 +4,6 @@ import {
   SQLiteConnection,
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
-import { MIGRATIONS, LATEST_SCHEMA_VERSION } from './migrations';
 
 const DB_NAME = 'personal_finance';
 
@@ -72,28 +71,10 @@ async function setupWebStore(sqlite: SQLiteConnection): Promise<void> {
   }
 }
 
-async function runMigrations(db: Database): Promise<void> {
+async function ensureMetaTable(db: Database): Promise<void> {
   await db.run(
     `CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);`
   );
-  const res = await db.query(`SELECT value FROM meta WHERE key = 'schema_version';`);
-  const current = res.values.length ? parseInt(String(res.values[0].value), 10) : 0;
-
-  for (const migration of MIGRATIONS) {
-    if (migration.version > current) {
-      await db.transaction(async (tx) => {
-        for (const stmt of migration.statements) {
-          await tx.run(stmt);
-        }
-        await tx.run(
-          `INSERT INTO meta (key, value) VALUES ('schema_version', ?)
-           ON CONFLICT(key) DO UPDATE SET value = excluded.value;`,
-          [String(migration.version)]
-        );
-      });
-    }
-  }
-  void LATEST_SCHEMA_VERSION;
 }
 
 export async function initDatabase(): Promise<Database> {
@@ -121,7 +102,7 @@ export async function initDatabase(): Promise<Database> {
     await dbConnection.execute('PRAGMA foreign_keys = ON;');
 
     database = new CapacitorDatabase(dbConnection);
-    await runMigrations(database);
+    await ensureMetaTable(database);
 
     if (Capacitor.getPlatform() === 'web') {
       await sqliteConnection.saveToStore(DB_NAME);

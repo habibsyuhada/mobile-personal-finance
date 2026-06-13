@@ -45,14 +45,19 @@ menghasilkan bundle multi-modul.
 
 ## Fase C — Pindahkan Modul Keuangan ke Struktur Modul
 
-- [ ] C1 Pindahkan `pages/`, `services/`, `store/`, `data/repositories`,
-      `data/seed`, `i18n` keuangan ke `src/modules/finance/`. (design §3)
-- [ ] C2 Buat `modules/finance/module.ts` (descriptor lengkap + migrations +
+- [x] C1 Pindahkan `pages/`, `services/`, `store/finance`, `data/repositories`,
+      `data/seed`, `data/index` keuangan ke `src/modules/finance/`. (design §3)
+- [x] C2 Buat `modules/finance/module.ts` (descriptor lengkap + migrations +
       init untuk recurring + seed kategori + tables). (P2.1, P2.3)
-- [ ] C3 Beri prefix tabel modul baru `fin_` (opsional untuk tabel lama; putuskan:
-      pertahankan nama lama untuk hindari migrasi data, atau rename + migrasi).
-- [ ] C4 Update import path & alias. Pastikan build bersih.
-- [ ] C5 Regression test: semua fungsi keuangan tetap jalan.
+- [x] C3 Keputusan: pertahankan nama tabel lama (tanpa prefix `fin_`) untuk
+      menghindari migrasi data berisiko; migrasi keuangan dijalankan runner
+      modul dengan versi ber-namespace `schema_version.finance` (DDL idempoten).
+- [x] C4 Update import path & alias. Build bersih.
+- [x] C5 Regression test: 54 test hijau, lint bersih.
+
+Catatan: `database.ts` kini generik (hanya koneksi + tabel `meta`), settings &
+backup tetap di lapisan platform/shared. Bootstrap App jadi module-agnostic:
+hanya init DB lalu jalankan migrasi & init tiap modul dari registry.
 
 Acceptance: modul keuangan hidup di `modules/finance/`, didaftarkan via registry,
 tidak ada regresi.

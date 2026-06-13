@@ -1,4 +1,4 @@
-import { getRepositories } from '@/data';
+import { getRepositories } from '@/modules/finance/data';
 import { getDatabase } from '@/data/db/database';
 
 // Ekspor & impor data untuk pemulihan (R7.3, R7.4).

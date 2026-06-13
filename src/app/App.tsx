@@ -2,13 +2,8 @@ import { useEffect, useState } from 'react';
 import { IonApp, IonRouterOutlet, IonSpinner, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
-import { initData } from '@/data';
-import { seedDefaultCategories } from '@/data/seed';
-import { getRepositories } from '@/data';
-import { initServices, getServices } from '@/services';
-import { getDatabase } from '@/data/db/database';
+import { initDatabase, getDatabase } from '@/data/db/database';
 import { runModuleMigrations, runModuleInit } from '@/platform/migrations';
-import { useFinanceStore } from '@/store/finance.store';
 import { useSettingsStore } from '@/store/settings.store';
 import Launcher from './Launcher';
 import ModuleHost from './ModuleHost';
@@ -30,20 +25,16 @@ setupIonicReact({ mode: 'md' });
 
 // Bootstrap singleton: dijamin hanya berjalan sekali walau React StrictMode
 // memanggil effect dua kali di dev (mencegah migrasi paralel/benturan transaksi).
+// Bersifat module-agnostic: shell hanya menyiapkan DB lalu menjalankan migrasi
+// & init tiap modul dari registry (tiap modul mengurus seed/service-nya).
 let bootstrapPromise: Promise<void> | null = null;
 function bootstrapOnce(): Promise<void> {
   if (!bootstrapPromise) {
     bootstrapPromise = (async () => {
       await useSettingsStore.getState().load();
-      await initData();
-      await seedDefaultCategories(getRepositories().categories);
-      initServices();
-      // Migrasi & init modul (Todo, Habit, dst.) di atas DB bersama.
+      await initDatabase();
       await runModuleMigrations(getDatabase());
       await runModuleInit(getDatabase());
-      // Proses transaksi berulang yang jatuh tempo (R1.7).
-      await getServices().recurring.processDue();
-      await useFinanceStore.getState().refreshAll();
     })();
   }
   return bootstrapPromise;
