@@ -6,6 +6,8 @@ import { initData } from '@/data';
 import { seedDefaultCategories } from '@/data/seed';
 import { getRepositories } from '@/data';
 import { initServices, getServices } from '@/services';
+import { getDatabase } from '@/data/db/database';
+import { runModuleMigrations, runModuleInit } from '@/platform/migrations';
 import { useFinanceStore } from '@/store/finance.store';
 import { useSettingsStore } from '@/store/settings.store';
 import Launcher from './Launcher';
@@ -39,6 +41,9 @@ export default function App() {
         await initData();
         await seedDefaultCategories(getRepositories().categories);
         initServices();
+        // Migrasi & init modul (Todo, Habit, dst.) di atas DB bersama.
+        await runModuleMigrations(getDatabase());
+        await runModuleInit(getDatabase());
         // Proses transaksi berulang yang jatuh tempo (R1.7).
         await getServices().recurring.processDue();
         await refreshAll();
