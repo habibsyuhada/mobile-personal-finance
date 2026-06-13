@@ -157,7 +157,7 @@ export default function ScanPage() {
               <p>{error}</p>
             </IonText>
             <IonButton onClick={reset}>{tr('common.retry')}</IonButton>
-            <IonButton fill="clear" routerLink="/tabs/transactions">
+            <IonButton fill="clear" routerLink="/m/finance/transactions">
               {tr('scan.manualInput')}
             </IonButton>
           </div>

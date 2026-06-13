@@ -5,6 +5,8 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButtons,
+  IonBackButton,
   IonList,
   IonItem,
   IonLabel,
@@ -20,13 +22,9 @@ import {
   useIonAlert,
 } from '@ionic/react';
 import {
-  walletOutline,
-  pricetagsOutline,
-  pieChartOutline,
   downloadOutline,
   cloudUploadOutline,
   trashBinOutline,
-  chevronForward,
 } from 'ionicons/icons';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { useSettingsStore } from '@/store/settings.store';
@@ -43,7 +41,10 @@ import {
 
 const CURRENCIES = ['IDR', 'USD', 'EUR', 'SGD', 'MYR', 'JPY'];
 
-export default function SettingsPage() {
+// Pengaturan global platform (lintas modul): tampilan, bahasa, mata uang
+// default, konfigurasi AI, dan kelola data. Pengaturan khusus modul tetap di
+// dalam modul masing-masing.
+export default function GlobalSettings() {
   const s = useSettingsStore();
   const refreshAll = useFinanceStore((st) => st.refreshAll);
   const tr = useT();
@@ -54,7 +55,7 @@ export default function SettingsPage() {
   const doExport = async (kind: 'json' | 'csv') => {
     try {
       const content = kind === 'json' ? await exportToJson() : await exportTransactionsCsv();
-      const filename = `keuangan-backup-${Date.now()}.${kind}`;
+      const filename = `backup-${Date.now()}.${kind}`;
       await Filesystem.writeFile({
         path: filename,
         data: content,
@@ -115,33 +116,15 @@ export default function SettingsPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader className="ion-no-border">
         <IonToolbar>
-          <IonTitle>{tr('settings.title')}</IonTitle>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/" />
+          </IonButtons>
+          <IonTitle>{tr('launcher.settings')}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonList>
-          <IonListHeader>
-            <IonLabel>{tr('settings.manage')}</IonLabel>
-          </IonListHeader>
-          <IonItem button routerLink="/m/finance/accounts">
-            <IonIcon icon={walletOutline} slot="start" />
-            <IonLabel>{tr('settings.accounts')}</IonLabel>
-            <IonIcon icon={chevronForward} slot="end" />
-          </IonItem>
-          <IonItem button routerLink="/m/finance/categories">
-            <IonIcon icon={pricetagsOutline} slot="start" />
-            <IonLabel>{tr('settings.categories')}</IonLabel>
-            <IonIcon icon={chevronForward} slot="end" />
-          </IonItem>
-          <IonItem button routerLink="/m/finance/budgets">
-            <IonIcon icon={pieChartOutline} slot="start" />
-            <IonLabel>{tr('settings.budgets')}</IonLabel>
-            <IonIcon icon={chevronForward} slot="end" />
-          </IonItem>
-        </IonList>
-
         <IonList>
           <IonListHeader>
             <IonLabel>{tr('settings.display')}</IonLabel>

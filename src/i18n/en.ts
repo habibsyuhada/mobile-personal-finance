@@ -173,4 +173,16 @@ export const en: Record<keyof typeof id, string> = {
   'settings.resetTitle': 'Delete all data?',
   'settings.resetMsg': 'All accounts, transactions, categories, and budgets will be permanently deleted.',
   'settings.resetDone': 'All data has been deleted.',
+
+  // Launcher (platform)
+  'launcher.title': 'My Apps',
+  'launcher.chooseModule': 'Choose a module to get started',
+  'launcher.settings': 'Settings',
+  'launcher.moduleUnavailable': 'Module unavailable.',
+  'launcher.backToHome': 'Back to Home',
+
+  // Module names
+  'module.finance.name': 'Finance',
+  'module.todo.name': 'Tasks',
+  'module.habit.name': 'Habits',
 };

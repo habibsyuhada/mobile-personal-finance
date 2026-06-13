@@ -152,7 +152,7 @@ export default function AccountsPage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tabs/dashboard" />
+            <IonBackButton defaultHref="/m/finance/dashboard" />
           </IonButtons>
           <IonTitle>{tr('acc.title')}</IonTitle>
         </IonToolbar>

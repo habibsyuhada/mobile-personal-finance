@@ -88,7 +88,7 @@ export default function BudgetsPage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tabs/dashboard" />
+            <IonBackButton defaultHref="/m/finance/dashboard" />
           </IonButtons>
           <IonTitle>{tr('budget.title', { period })}</IonTitle>
         </IonToolbar>

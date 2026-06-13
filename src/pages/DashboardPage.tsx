@@ -5,6 +5,8 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButtons,
+  IonButton,
   IonCard,
   IonCardContent,
   IonList,
@@ -13,11 +15,11 @@ import {
   IonIcon,
   IonRefresher,
   IonRefresherContent,
-  IonButton,
   IonSegment,
   IonSegmentButton,
 } from '@ionic/react';
-import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
+import { arrowDownOutline, arrowUpOutline, appsOutline } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';
 import { iconForCategory, colorForCategory, transferIcon } from '@/lib/categoryIcons';
 import { useFinanceStore } from '@/store/finance.store';
 import { getServices } from '@/services';
@@ -35,6 +37,7 @@ export default function DashboardPage() {
   const fmt = useFormatMoney();
   const tr = useT();
   const locale = useSettingsStore((s) => s.locale);
+  const history = useHistory();
 
   const [period, setPeriod] = useState<PeriodType>('month');
   const [totals, setTotals] = useState({ income: 0, expense: 0 });
@@ -59,6 +62,11 @@ export default function DashboardPage() {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonButton onClick={() => history.push('/')}>
+              <IonIcon slot="icon-only" icon={appsOutline} />
+            </IonButton>
+          </IonButtons>
           <IonTitle>{tr('dashboard.title')}</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -118,7 +126,7 @@ export default function DashboardPage() {
 
         <div className="section-head">
           <h3>{tr('dashboard.recent')}</h3>
-          <IonButton fill="clear" size="small" routerLink="/tabs/transactions">
+          <IonButton fill="clear" size="small" routerLink="/m/finance/transactions">
             {tr('common.viewAll')}
           </IonButton>
         </div>
@@ -136,7 +144,7 @@ export default function DashboardPage() {
                 ? 'var(--ion-color-primary)'
                 : colorForCategory(c?.color);
               return (
-                <IonItem key={t.id} className="tx-item" routerLink="/tabs/transactions">
+                <IonItem key={t.id} className="tx-item" routerLink="/m/finance/transactions">
                   <div
                     className="cat-avatar"
                     slot="start"

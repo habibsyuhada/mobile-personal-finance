@@ -8,7 +8,9 @@ import { getRepositories } from '@/data';
 import { initServices, getServices } from '@/services';
 import { useFinanceStore } from '@/store/finance.store';
 import { useSettingsStore } from '@/store/settings.store';
-import { Tabs } from './Tabs';
+import Launcher from './Launcher';
+import ModuleHost from './ModuleHost';
+import GlobalSettings from './GlobalSettings';
 
 /* Ionic core + utility CSS */
 import '@ionic/react/css/core.css';
@@ -79,8 +81,11 @@ export default function App() {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route path="/tabs" render={() => <Tabs />} />
-          <Route exact path="/" render={() => <Redirect to="/tabs/dashboard" />} />
+          <Route exact path="/" render={() => <Launcher />} />
+          <Route exact path="/settings" render={() => <GlobalSettings />} />
+          <Route path="/m/:moduleId" render={() => <ModuleHost />} />
+          {/* Kompatibilitas rute lama */}
+          <Route exact path="/tabs" render={() => <Redirect to="/m/finance/dashboard" />} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

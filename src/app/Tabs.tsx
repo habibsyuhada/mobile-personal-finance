@@ -29,35 +29,35 @@ export function Tabs() {
   return (
     <IonTabs>
       <IonRouterOutlet>
-        <Route exact path="/tabs/dashboard" render={() => <DashboardPage />} />
-        <Route exact path="/tabs/transactions" render={() => <TransactionsPage />} />
-        <Route exact path="/tabs/scan" render={() => <ScanPage />} />
-        <Route exact path="/tabs/reports" render={() => <ReportsPage />} />
-        <Route exact path="/tabs/settings" render={() => <SettingsPage />} />
-        <Route exact path="/tabs/accounts" render={() => <AccountsPage />} />
-        <Route exact path="/tabs/categories" render={() => <CategoriesPage />} />
-        <Route exact path="/tabs/budgets" render={() => <BudgetsPage />} />
-        <Route exact path="/tabs" render={() => <Redirect to="/tabs/dashboard" />} />
+        <Route exact path="/m/finance/dashboard" render={() => <DashboardPage />} />
+        <Route exact path="/m/finance/transactions" render={() => <TransactionsPage />} />
+        <Route exact path="/m/finance/scan" render={() => <ScanPage />} />
+        <Route exact path="/m/finance/reports" render={() => <ReportsPage />} />
+        <Route exact path="/m/finance/settings" render={() => <SettingsPage />} />
+        <Route exact path="/m/finance/accounts" render={() => <AccountsPage />} />
+        <Route exact path="/m/finance/categories" render={() => <CategoriesPage />} />
+        <Route exact path="/m/finance/budgets" render={() => <BudgetsPage />} />
+        <Route exact path="/m/finance" render={() => <Redirect to="/m/finance/dashboard" />} />
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom">
-        <IonTabButton tab="dashboard" href="/tabs/dashboard">
+        <IonTabButton tab="dashboard" href="/m/finance/dashboard">
           <IonIcon icon={homeOutline} />
           <IonLabel>{t('tab.dashboard')}</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="transactions" href="/tabs/transactions">
+        <IonTabButton tab="transactions" href="/m/finance/transactions">
           <IonIcon icon={listOutline} />
           <IonLabel>{t('tab.transactions')}</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="scan" href="/tabs/scan">
+        <IonTabButton tab="scan" href="/m/finance/scan">
           <IonIcon icon={scanOutline} />
           <IonLabel>{t('tab.scan')}</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="reports" href="/tabs/reports">
+        <IonTabButton tab="reports" href="/m/finance/reports">
           <IonIcon icon={pieChartOutline} />
           <IonLabel>{t('tab.reports')}</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="settings" href="/tabs/settings">
+        <IonTabButton tab="settings" href="/m/finance/settings">
           <IonIcon icon={settingsOutline} />
           <IonLabel>{t('tab.settings')}</IonLabel>
         </IonTabButton>

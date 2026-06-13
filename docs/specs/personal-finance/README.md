@@ -1,10 +1,19 @@
-# Spec — Aplikasi Pencatatan Keuangan Pribadi
+# Spec — Modul Keuangan (Personal Finance)
 
-Spec-driven development untuk aplikasi mobile pencatatan keuangan pribadi.
+> **Catatan platform:** Aplikasi kini menjadi **personal super app** multi-modul
+> (lihat [`../../README.md`](../../README.md) dan [`../platform/`](../platform/)).
+> Keuangan adalah **modul pertama**, bukan keseluruhan aplikasi. Rute targetnya
+> menjadi `/m/finance/...` dan datanya hidup berdampingan dengan modul lain
+> (Todo, Habit) dalam satu database, memakai infrastruktur bersama (tema, i18n,
+> migrasi, ekspor/impor). Refactor pemindahan kode ke `src/modules/finance/`
+> dijelaskan di [`../platform/tasks.md`](../platform/tasks.md) Fase C. Isi
+> requirements/design/tasks modul di bawah tetap berlaku.
+
+Spec-driven development untuk modul pencatatan keuangan pribadi.
 
 ## Ringkasan
 
-Aplikasi mobile **Android** (React + Ionic dibungkus **Capacitor**) untuk
+Modul **Android** (React + Ionic dibungkus **Capacitor**) untuk
 mencatat keuangan pribadi. Bekerja **offline-first** dengan penyimpanan lokal
 **SQLite** yang persisten, **tanpa login** (single user per device). Fitur
 unggulan: **scan struk** dengan AI vision untuk mengisi transaksi otomatis.

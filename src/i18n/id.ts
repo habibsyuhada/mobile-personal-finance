@@ -171,4 +171,16 @@ export const id = {
   'settings.resetTitle': 'Hapus semua data?',
   'settings.resetMsg': 'Seluruh akun, transaksi, kategori, dan anggaran akan dihapus permanen.',
   'settings.resetDone': 'Semua data telah dihapus.',
+
+  // Launcher (platform)
+  'launcher.title': 'Aplikasi Saya',
+  'launcher.chooseModule': 'Pilih modul untuk memulai',
+  'launcher.settings': 'Pengaturan',
+  'launcher.moduleUnavailable': 'Modul tidak tersedia.',
+  'launcher.backToHome': 'Kembali ke Beranda',
+
+  // Nama modul
+  'module.finance.name': 'Keuangan',
+  'module.todo.name': 'Tugas',
+  'module.habit.name': 'Kebiasaan',
 };

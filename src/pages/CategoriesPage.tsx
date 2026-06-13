@@ -134,7 +134,7 @@ export default function CategoriesPage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tabs/dashboard" />
+            <IonBackButton defaultHref="/m/finance/dashboard" />
           </IonButtons>
           <IonTitle>{tr('cat.title')}</IonTitle>
         </IonToolbar>
