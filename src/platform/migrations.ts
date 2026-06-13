@@ -1,10 +1,20 @@
 import type { Database } from '@/data/db/database';
 import { MODULES } from './registry';
 
+let migrationPromise: Promise<void> | null = null;
+
 // Runner migrasi per-modul. Tiap modul punya versi sendiri di tabel `meta`
 // dengan key `schema_version.<moduleId>`. Migrasi dijalankan berurutan dan
 // idempoten; tiap langkah dalam transaksi agar aman (platform P5.3).
-export async function runModuleMigrations(db: Database): Promise<void> {
+// Dijaga singleton agar tidak berjalan paralel (mis. React StrictMode).
+export function runModuleMigrations(db: Database): Promise<void> {
+  if (!migrationPromise) {
+    migrationPromise = doRunModuleMigrations(db);
+  }
+  return migrationPromise;
+}
+
+async function doRunModuleMigrations(db: Database): Promise<void> {
   await db.run(
     `CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);`
   );
