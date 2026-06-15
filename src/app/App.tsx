@@ -4,10 +4,13 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import { initDatabase, getDatabase } from '@/data/db/database';
 import { runModuleMigrations, runModuleInit } from '@/platform/migrations';
+import { Notifications } from '@/platform/notifications';
 import { useSettingsStore } from '@/store/settings.store';
+import { useBannerStore } from '@/store/banner.store';
 import Launcher from './Launcher';
 import ModuleHost from './ModuleHost';
 import GlobalSettings from './GlobalSettings';
+import { BannerHost } from './BannerHost';
 
 /* Ionic core + utility CSS */
 import '@ionic/react/css/core.css';
@@ -35,6 +38,19 @@ function bootstrapOnce(): Promise<void> {
       await initDatabase();
       await runModuleMigrations(getDatabase());
       await runModuleInit(getDatabase());
+      // Siapkan channel notifikasi + emit ke banner store (web/fallback).
+      await Notifications.ensureDefaultChannels();
+      await Notifications.requestPermission();
+      Notifications.onBanner((e) => {
+        useBannerStore.getState().push({
+          id: e.id,
+          title: e.title,
+          body: e.body,
+          kind: e.kind,
+          meta: e.meta,
+          at: e.at,
+        });
+      });
     })();
   }
   return bootstrapPromise;
@@ -97,6 +113,7 @@ export default function App() {
           <Route exact path="/tabs" render={() => <Redirect to="/m/finance/dashboard" />} />
         </IonRouterOutlet>
       </IonReactRouter>
+      <BannerHost />
     </IonApp>
   );
 }
