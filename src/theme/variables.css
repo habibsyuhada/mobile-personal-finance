@@ -61,6 +61,14 @@
   --app-shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
+/* True black (AMOLED-friendly) */
+.ion-palette-dark.true-black {
+  --ion-background-color: #000000;
+  --ion-toolbar-background: #050505;
+  --ion-item-background: #050505;
+  --ion-card-background: #050505;
+}
+
 /* ---------- Toolbar / header ---------- */
 ion-toolbar {
   --border-width: 0 !important;

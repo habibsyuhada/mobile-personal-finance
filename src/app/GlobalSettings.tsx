@@ -39,6 +39,7 @@ import {
   importFromJson,
   resetAllData,
 } from '@/features/backup/backup';
+import { THEME_PRESETS } from '@/lib/theme';
 
 const CURRENCIES = ['IDR', 'USD', 'EUR', 'SGD', 'MYR', 'JPY'];
 
@@ -163,6 +164,86 @@ export default function GlobalSettings() {
                 </IonSelectOption>
               ))}
             </IonSelect>
+          </IonItem>
+        </IonList>
+
+        <IonList>
+          <IonListHeader>
+            <IonLabel>{tr('settings.themePicker')}</IonLabel>
+          </IonListHeader>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 10,
+              padding: '0 16px 12px',
+            }}
+          >
+            {THEME_PRESETS.map((p) => {
+              const active = s.themePreset === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => s.set('themePreset', p.id)}
+                  aria-pressed={active}
+                  style={{
+                    border: active
+                      ? `2px solid ${p.primary}`
+                      : '2px solid transparent',
+                    background: p.gradient,
+                    color: '#fff',
+                    borderRadius: 14,
+                    padding: 14,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    boxShadow: active ? `0 4px 14px ${p.primary}55` : 'none',
+                    transition: 'box-shadow 200ms ease, transform 200ms ease',
+                  }}
+                >
+                  <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 2 }}>
+                    {p.label}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      opacity: 0.85,
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    {p.primary}
+                  </div>
+                  {active && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        background: 'rgba(255,255,255,0.25)',
+                        borderRadius: 8,
+                        padding: '2px 6px',
+                        fontSize: 10,
+                        fontWeight: 700,
+                      }}
+                    >
+                      ✓
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <IonItem button onClick={() => s.set('themeAccent', '#6366f1')}>
+            <IonLabel>{tr('settings.themeReset')}</IonLabel>
+            <IonNote slot="end">{s.themeAccent}</IonNote>
+          </IonItem>
+          <IonItem>
+            <IonLabel>{tr('settings.trueBlack')}</IonLabel>
+            <IonToggle
+              checked={s.trueBlack}
+              onIonChange={(e) => s.set('trueBlack', e.detail.checked)}
+              slot="end"
+            />
           </IonItem>
         </IonList>
 

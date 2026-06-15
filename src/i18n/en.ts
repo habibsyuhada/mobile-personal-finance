@@ -305,4 +305,9 @@ export const en: Record<keyof typeof id, string> = {
   'onboarding.sample.body': '3 tasks, 2 habits, and 3 sample transactions',
   'onboarding.skip': 'Skip',
   'common.next': 'Next',
+
+  // Theme
+  'settings.themePicker': 'Theme',
+  'settings.themeReset': 'Reset to preset color',
+  'settings.trueBlack': 'AMOLED mode (true black)',
 };

@@ -303,4 +303,9 @@ export const id = {
   'onboarding.sample.body': '3 task, 2 habit, dan 3 transaksi contoh',
   'onboarding.skip': 'Lewati',
   'common.next': 'Lanjut',
+
+  // Theme
+  'settings.themePicker': 'Tema',
+  'settings.themeReset': 'Reset ke warna preset',
+  'settings.trueBlack': 'Mode AMOLED (hitam pekat)',
 };
