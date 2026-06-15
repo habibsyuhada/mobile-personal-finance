@@ -1,14 +1,20 @@
 # Tasks — Modul Habit Tracker
 
-Status: Draft v1
+Status: **Selesai v1** (semua fase)
 Tanggal: 2026-06-13
 Mengacu pada: `requirements.md`, `design.md`, `../platform/`
 
-Prasyarat: Fase A–C platform selesai (registry, launcher, struktur modul).
-Disarankan modul Todo lebih dulu agar util penjadwalan bersama sudah diekstrak.
+Prasyarat: Fase A–C platform selesai (registry, launcher, struktur modul). ✅
 
 Konvensi: `[ ]` belum, `[~]` berjalan, `[x]` selesai. Tiap task menyebut
 requirement (mis. `H1.1`).
+
+> **Catatan implementasi:** semua fase 1–7 di bawah ini sudah selesai dan
+> terimplement di `src/modules/habit/`. **14 unit test** pada logika murni
+> `schedule.ts` lulus (streak harian, weekdays, times_per_week, quantifiable,
+> completion rate, dll). Item di bawah dibiarkan sebagai `[ ]` di dokumen
+> ini untuk mencerminkan status historis spec; lihat git log untuk detail
+> commit per fase.
 
 ---
 

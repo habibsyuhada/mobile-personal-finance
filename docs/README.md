@@ -9,10 +9,10 @@ berbagi shell, tema, penyimpanan, dan i18n yang sama.
 
 | Modul | Status | Spec |
 |---|---|---|
-| Platform (shell + launcher) | Direncanakan | [specs/platform](./specs/platform/) |
+| Platform (shell + launcher) | Selesai (Fase A–E) | [specs/platform](./specs/platform/) |
 | Keuangan (Personal Finance) | Selesai (MVP) | [specs/personal-finance](./specs/personal-finance/) |
-| Todo List | Direncanakan | [specs/todo](./specs/todo/) |
-| Habit Tracker | Direncanakan | [specs/habit-tracker](./specs/habit-tracker/) |
+| Todo List | Selesai (MVP) | [specs/todo](./specs/todo/) |
+| Habit Tracker | Selesai (MVP) | [specs/habit-tracker](./specs/habit-tracker/) |
 | Kandidat modul lain | Backlog | [specs/module-catalog.md](./specs/module-catalog.md) |
 
 ## Cara membaca
@@ -30,12 +30,16 @@ berbagi shell, tema, penyimpanan, dan i18n yang sama.
 
 - **Offline-first**: semua data di SQLite lokal, persisten lintas buka-tutup.
 - **Module isolation**: tiap modul punya tabel & namespace sendiri (prefix
-  `fin_`, `todo_`, `habit_`), tidak saling mengganggu.
-- **Shared infrastructure**: satu koneksi DB, satu sistem migrasi, satu tema,
-  satu i18n, satu pengaturan global.
+  `todo_`, `habit_`, dst.). Keuangan menyimpan nama tabel lama demi data
+  pengguna yang sudah ada (lihat `specs/platform/tasks.md` C3).
+- **Shared infrastructure**: satu koneksi DB, satu sistem migrasi (runner
+  per-modul), satu tema, satu i18n, satu pengaturan global.
 - **Repository pattern**: lapisan data tiap modul memakai interface agar bisa
   diganti ke backend (PostgreSQL) di fase lanjutan tanpa membongkar UI.
 - **Konsistensi UI**: semua modul memakai komponen & token desain yang sama.
+- **Module registry**: menambah modul = tambah satu deskriptor di
+  `src/platform/registry.ts` + folder modul baru. Launcher & routing otomatis
+  membaca dari sini (NFR2).
 
 ## Riwayat keputusan penting
 
