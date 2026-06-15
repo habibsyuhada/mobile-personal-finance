@@ -99,6 +99,10 @@ export class HabitService {
     return this.repo.logsForHabit(habitId);
   }
 
+  logsForDate(date: string) {
+    return this.repo.logsForDate(date);
+  }
+
   /** Jadwalkan reminder harian untuk satu habit (cancel dulu yg lama). */
   async scheduleReminder(habit: Habit): Promise<void> {
     await Notifications.cancel(`habit:${habit.id}`);

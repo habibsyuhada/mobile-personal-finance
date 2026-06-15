@@ -22,6 +22,9 @@ import { arrowDownOutline, arrowUpOutline, appsOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { iconForCategory, colorForCategory, transferIcon } from '@/lib/categoryIcons';
 import { RollingNumber } from '@/lib/RollingNumber';
+import { InsightCards } from '@/lib/InsightCards';
+import { useInsights } from '@/lib/useInsights';
+import { generateFinanceInsights } from '../lib/insights';
 import { useFinanceStore } from '@/modules/finance/store/finance.store';
 import { getServices } from '@/modules/finance/services';
 import { useFormatMoney } from '@/lib/useFormatMoney';
@@ -58,6 +61,10 @@ export default function DashboardPage() {
     accounts.find((a) => a.id === id)?.name ?? '-';
 
   const recent = transactions.slice(0, 8);
+  const { insights, loading: insightsLoading } = useInsights(
+    'finance:dashboard',
+    generateFinanceInsights
+  );
 
   return (
     <IonPage>
@@ -105,6 +112,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="summary-grid" style={{ padding: 16 }}>
+          <InsightCards insights={insights} loading={insightsLoading} />
           <IonCard className="summary-card">
             <IonCardContent>
               <div className="summary-icon income">
