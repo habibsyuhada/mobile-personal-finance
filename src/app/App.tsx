@@ -8,12 +8,14 @@ import { Notifications } from '@/platform/notifications';
 import { runModuleScheduleReminders } from '@/platform/registry';
 import { useSettingsStore, onNotifSettingChange } from '@/store/settings.store';
 import { useBannerStore } from '@/store/banner.store';
+import { useOnboardingStore } from '@/store/onboarding.store';
+import { useCelebration } from '@/store/celebration.store';
 import Launcher from './Launcher';
 import ModuleHost from './ModuleHost';
 import GlobalSettings from './GlobalSettings';
+import Onboarding from './Onboarding';
 import { BannerHost } from './BannerHost';
 import { Celebration } from './Celebration';
-import { useCelebration } from '@/store/celebration.store';
 
 /* Ionic core + utility CSS */
 import '@ionic/react/css/core.css';
@@ -38,6 +40,7 @@ function bootstrapOnce(): Promise<void> {
   if (!bootstrapPromise) {
     bootstrapPromise = (async () => {
       await useSettingsStore.getState().load();
+      await useOnboardingStore.getState().load();
       await initDatabase();
       await runModuleMigrations(getDatabase());
       await runModuleInit(getDatabase());
@@ -135,7 +138,8 @@ export default function App() {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route exact path="/" render={() => <Launcher />} />
+          <Route exact path="/onboarding" render={() => <Onboarding />} />
+          <Route exact path="/" render={() => <LauncherOrOnboarding />} />
           <Route exact path="/settings" render={() => <GlobalSettings />} />
           <Route path="/m/:moduleId" render={() => <ModuleHost />} />
           {/* Kompatibilitas rute lama */}
@@ -146,6 +150,11 @@ export default function App() {
       <CelebrationOverlay />
     </IonApp>
   );
+}
+
+function LauncherOrOnboarding() {
+  const completed = useOnboardingStore((s) => s.completed);
+  return completed ? <Launcher /> : <Onboarding />;
 }
 
 function CelebrationOverlay() {

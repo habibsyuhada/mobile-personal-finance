@@ -290,4 +290,17 @@ export const id = {
   'notif.noon.habit.body': 'Jangan lupa cek-in: {name}',
   'notif.noon.task.body': '{count} tenggat hari ini',
   'notif.noon.finance.body': 'Belum ada transaksi hari ini. Yuk catat!',
+
+  // Onboarding
+  'onboarding.welcome.title': 'Selamat Datang',
+  'onboarding.welcome.body': 'Aplikasi pribadi all-in-one: kelola keuangan, bangun kebiasaan, dan selesaikan tugas — semua tanpa akun, data 100% di perangkatmu.',
+  'onboarding.notif.title': 'Pengingat Cerdas',
+  'onboarding.notif.body': 'Notifikasi pintar untuk habit harian, tenggat tugas, dan ringkasan keuangan. Bisa dimatikan per modul.',
+  'onboarding.start.title': 'Siap Memulai?',
+  'onboarding.start.body': 'Mau coba dengan data contoh untuk melihat semua fitur, atau mulai kosong?',
+  'onboarding.start.cta': 'Mulai',
+  'onboarding.sample.title': 'Isi dengan data contoh',
+  'onboarding.sample.body': '3 task, 2 habit, dan 3 transaksi contoh',
+  'onboarding.skip': 'Lewati',
+  'common.next': 'Lanjut',
 };

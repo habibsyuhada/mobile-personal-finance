@@ -292,4 +292,17 @@ export const en: Record<keyof typeof id, string> = {
   'notif.noon.habit.body': "Don't forget to check in: {name}",
   'notif.noon.task.body': '{count} due today',
   'notif.noon.finance.body': 'No transactions today yet. Log one!',
+
+  // Onboarding
+  'onboarding.welcome.title': 'Welcome',
+  'onboarding.welcome.body': 'Your personal all-in-one app: track finances, build habits, and complete tasks — no account needed, all your data stays on your device.',
+  'onboarding.notif.title': 'Smart Reminders',
+  'onboarding.notif.body': 'Friendly nudges for daily habits, task deadlines, and a finance summary. Toggle each module independently.',
+  'onboarding.start.title': 'Ready to Begin?',
+  'onboarding.start.body': 'Want to try with sample data to see everything in action, or start clean?',
+  'onboarding.start.cta': 'Get Started',
+  'onboarding.sample.title': 'Fill with sample data',
+  'onboarding.sample.body': '3 tasks, 2 habits, and 3 sample transactions',
+  'onboarding.skip': 'Skip',
+  'common.next': 'Next',
 };
