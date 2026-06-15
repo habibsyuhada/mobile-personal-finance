@@ -16,8 +16,11 @@ const KEYS = {
   aiModel: 'pref.ai.model',
   aiApiKey: 'pref.ai.apiKey',
   notifHabitEnabled: 'pref.notif.habit.enabled',
+  notifHabitNoonEnabled: 'pref.notif.habit.noon.enabled',
   notifTaskEnabled: 'pref.notif.task.enabled',
+  notifTaskNoonEnabled: 'pref.notif.task.noon.enabled',
   notifFinanceEnabled: 'pref.notif.finance.enabled',
+  notifFinanceNoonEnabled: 'pref.notif.finance.noon.enabled',
   notifFinanceTime: 'pref.notif.finance.time', // 'HH:mm'
 } as const;
 
@@ -32,8 +35,11 @@ export interface AppSettings {
   aiModel: string;
   aiApiKey: string;
   notifHabitEnabled: boolean;
+  notifHabitNoonEnabled: boolean;
   notifTaskEnabled: boolean;
+  notifTaskNoonEnabled: boolean;
   notifFinanceEnabled: boolean;
+  notifFinanceNoonEnabled: boolean;
   notifFinanceTime: string; // 'HH:mm'
 }
 
@@ -46,8 +52,11 @@ export const DEFAULT_SETTINGS: AppSettings = {
   aiModel: 'openrouter/google/gemma-4-31b-it:free',
   aiApiKey: '',
   notifHabitEnabled: true,
+  notifHabitNoonEnabled: true,
   notifTaskEnabled: true,
+  notifTaskNoonEnabled: true,
   notifFinanceEnabled: true,
+  notifFinanceNoonEnabled: false,
   notifFinanceTime: '20:00',
 };
 
@@ -66,8 +75,11 @@ export async function loadSettings(): Promise<AppSettings> {
     aiModel,
     aiApiKey,
     notifHabitEnabled,
+    notifHabitNoonEnabled,
     notifTaskEnabled,
+    notifTaskNoonEnabled,
     notifFinanceEnabled,
+    notifFinanceNoonEnabled,
     notifFinanceTime,
   ] = await Promise.all([
     get(KEYS.theme, DEFAULT_SETTINGS.theme),
@@ -78,8 +90,11 @@ export async function loadSettings(): Promise<AppSettings> {
     get(KEYS.aiModel, DEFAULT_SETTINGS.aiModel),
     get(KEYS.aiApiKey, DEFAULT_SETTINGS.aiApiKey),
     get(KEYS.notifHabitEnabled, 'true'),
+    get(KEYS.notifHabitNoonEnabled, 'true'),
     get(KEYS.notifTaskEnabled, 'true'),
+    get(KEYS.notifTaskNoonEnabled, 'true'),
     get(KEYS.notifFinanceEnabled, 'true'),
+    get(KEYS.notifFinanceNoonEnabled, 'false'),
     get(KEYS.notifFinanceTime, DEFAULT_SETTINGS.notifFinanceTime),
   ]);
   return {
@@ -91,8 +106,11 @@ export async function loadSettings(): Promise<AppSettings> {
     aiModel,
     aiApiKey,
     notifHabitEnabled: notifHabitEnabled !== 'false',
+    notifHabitNoonEnabled: notifHabitNoonEnabled !== 'false',
     notifTaskEnabled: notifTaskEnabled !== 'false',
+    notifTaskNoonEnabled: notifTaskNoonEnabled !== 'false',
     notifFinanceEnabled: notifFinanceEnabled !== 'false',
+    notifFinanceNoonEnabled: notifFinanceNoonEnabled === 'true',
     notifFinanceTime,
   };
 }
@@ -110,8 +128,11 @@ export async function saveSetting<K extends keyof AppSettings>(
     aiModel: KEYS.aiModel,
     aiApiKey: KEYS.aiApiKey,
     notifHabitEnabled: KEYS.notifHabitEnabled,
+    notifHabitNoonEnabled: KEYS.notifHabitNoonEnabled,
     notifTaskEnabled: KEYS.notifTaskEnabled,
+    notifTaskNoonEnabled: KEYS.notifTaskNoonEnabled,
     notifFinanceEnabled: KEYS.notifFinanceEnabled,
+    notifFinanceNoonEnabled: KEYS.notifFinanceNoonEnabled,
     notifFinanceTime: KEYS.notifFinanceTime,
   };
   await Preferences.set({ key: map[key], value: String(value) });

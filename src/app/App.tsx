@@ -60,16 +60,23 @@ function bootstrapOnce(): Promise<void> {
       onNotifSettingChange((changes) => {
         if (
           'notifFinanceEnabled' in changes ||
-          'notifFinanceTime' in changes
+          'notifFinanceTime' in changes ||
+          'notifFinanceNoonEnabled' in changes
         ) {
           import('@/modules/finance/features/notifications').then((m) =>
             m.scheduleFinanceSummary()
           );
         }
-        if ('notifHabitEnabled' in changes) {
+        if (
+          'notifHabitEnabled' in changes ||
+          'notifHabitNoonEnabled' in changes
+        ) {
           runModuleScheduleReminders();
         }
-        if ('notifTaskEnabled' in changes) {
+        if (
+          'notifTaskEnabled' in changes ||
+          'notifTaskNoonEnabled' in changes
+        ) {
           runModuleScheduleReminders();
         }
       });

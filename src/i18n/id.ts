@@ -284,4 +284,10 @@ export const id = {
   'notif.permissionRequest': 'Aktifkan notifikasi?',
   'notif.permissionBody': 'Kami akan mengingatkan habit, tenggat tugas, dan ringkasan keuangan.',
   'notif.taskDue': 'Tenggat tiba: {title}',
+  'notif.noon.habit': 'Pengingat siang (belum cek-in)',
+  'notif.noon.task': 'Pengingat tenggat siang',
+  'notif.noon.finance': 'Pengingat siang (belum catat)',
+  'notif.noon.habit.body': 'Jangan lupa cek-in: {name}',
+  'notif.noon.task.body': '{count} tenggat hari ini',
+  'notif.noon.finance.body': 'Belum ada transaksi hari ini. Yuk catat!',
 };

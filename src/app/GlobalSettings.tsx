@@ -178,6 +178,16 @@ export default function GlobalSettings() {
               slot="end"
             />
           </IonItem>
+          {s.notifHabitEnabled && (
+            <IonItem>
+              <IonLabel>{tr('notif.noon.habit')}</IonLabel>
+              <IonToggle
+                checked={s.notifHabitNoonEnabled}
+                onIonChange={(e) => s.set('notifHabitNoonEnabled', e.detail.checked)}
+                slot="end"
+              />
+            </IonItem>
+          )}
           <IonItem>
             <IonLabel>{tr('notif.enabled.task')}</IonLabel>
             <IonToggle
@@ -186,6 +196,16 @@ export default function GlobalSettings() {
               slot="end"
             />
           </IonItem>
+          {s.notifTaskEnabled && (
+            <IonItem>
+              <IonLabel>{tr('notif.noon.task')}</IonLabel>
+              <IonToggle
+                checked={s.notifTaskNoonEnabled}
+                onIonChange={(e) => s.set('notifTaskNoonEnabled', e.detail.checked)}
+                slot="end"
+              />
+            </IonItem>
+          )}
           <IonItem>
             <IonLabel>{tr('notif.enabled.finance')}</IonLabel>
             <IonToggle
@@ -211,6 +231,16 @@ export default function GlobalSettings() {
                   margin: '8px 0',
                   minWidth: 120,
                 }}
+              />
+            </IonItem>
+          )}
+          {s.notifFinanceEnabled && (
+            <IonItem>
+              <IonLabel>{tr('notif.noon.finance')}</IonLabel>
+              <IonToggle
+                checked={s.notifFinanceNoonEnabled}
+                onIonChange={(e) => s.set('notifFinanceNoonEnabled', e.detail.checked)}
+                slot="end"
               />
             </IonItem>
           )}

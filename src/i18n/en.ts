@@ -286,4 +286,10 @@ export const en: Record<keyof typeof id, string> = {
   'notif.permissionRequest': 'Enable notifications?',
   'notif.permissionBody': "We'll remind you about habits, task deadlines, and a daily finance summary.",
   'notif.taskDue': 'Due now: {title}',
+  'notif.noon.habit': 'Noon reminder (not yet checked-in)',
+  'notif.noon.task': 'Noon deadline reminder',
+  'notif.noon.finance': 'Noon reminder (no entries yet)',
+  'notif.noon.habit.body': "Don't forget to check in: {name}",
+  'notif.noon.task.body': '{count} due today',
+  'notif.noon.finance.body': 'No transactions today yet. Log one!',
 };

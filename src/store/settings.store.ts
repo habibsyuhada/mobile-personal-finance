@@ -15,7 +15,18 @@ interface SettingsState extends AppSettings {
 }
 
 type NotifChangeListener = (
-  changes: Partial<Pick<AppSettings, 'notifFinanceEnabled' | 'notifFinanceTime' | 'notifHabitEnabled' | 'notifTaskEnabled'>>
+  changes: Partial<
+    Pick<
+      AppSettings,
+      | 'notifFinanceEnabled'
+      | 'notifFinanceNoonEnabled'
+      | 'notifFinanceTime'
+      | 'notifHabitEnabled'
+      | 'notifHabitNoonEnabled'
+      | 'notifTaskEnabled'
+      | 'notifTaskNoonEnabled'
+    >
+  >
 ) => void;
 const notifListeners = new Set<NotifChangeListener>();
 
@@ -57,9 +68,12 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     // Beri tahu listener kalau ada perubahan terkait notifikasi.
     const notifKeys: (keyof AppSettings)[] = [
       'notifFinanceEnabled',
+      'notifFinanceNoonEnabled',
       'notifFinanceTime',
       'notifHabitEnabled',
+      'notifHabitNoonEnabled',
       'notifTaskEnabled',
+      'notifTaskNoonEnabled',
     ];
     if (notifKeys.includes(key)) {
       const changes: Record<string, unknown> = { [key]: value };
