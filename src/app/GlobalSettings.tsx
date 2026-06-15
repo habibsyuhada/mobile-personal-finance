@@ -18,6 +18,7 @@ import {
   IonButton,
   IonText,
   IonNote,
+  IonToggle,
   useIonToast,
   useIonAlert,
 } from '@ionic/react';
@@ -163,6 +164,56 @@ export default function GlobalSettings() {
               ))}
             </IonSelect>
           </IonItem>
+        </IonList>
+
+        <IonList>
+          <IonListHeader>
+            <IonLabel>{tr('notif.title')}</IonLabel>
+          </IonListHeader>
+          <IonItem>
+            <IonLabel>{tr('notif.enabled.habit')}</IonLabel>
+            <IonToggle
+              checked={s.notifHabitEnabled}
+              onIonChange={(e) => s.set('notifHabitEnabled', e.detail.checked)}
+              slot="end"
+            />
+          </IonItem>
+          <IonItem>
+            <IonLabel>{tr('notif.enabled.task')}</IonLabel>
+            <IonToggle
+              checked={s.notifTaskEnabled}
+              onIonChange={(e) => s.set('notifTaskEnabled', e.detail.checked)}
+              slot="end"
+            />
+          </IonItem>
+          <IonItem>
+            <IonLabel>{tr('notif.enabled.finance')}</IonLabel>
+            <IonToggle
+              checked={s.notifFinanceEnabled}
+              onIonChange={(e) => s.set('notifFinanceEnabled', e.detail.checked)}
+              slot="end"
+            />
+          </IonItem>
+          {s.notifFinanceEnabled && (
+            <IonItem>
+              <IonLabel position="stacked">{tr('notif.financeTime')}</IonLabel>
+              <input
+                type="time"
+                value={s.notifFinanceTime}
+                onChange={(e) => s.set('notifFinanceTime', e.target.value)}
+                style={{
+                  background: 'var(--ion-card-background)',
+                  color: 'var(--ion-text-color)',
+                  border: '1px solid var(--ion-color-step-200, #ddd)',
+                  borderRadius: 8,
+                  padding: '8px 12px',
+                  fontSize: 16,
+                  margin: '8px 0',
+                  minWidth: 120,
+                }}
+              />
+            </IonItem>
+          )}
         </IonList>
 
         <IonList>

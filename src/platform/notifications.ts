@@ -43,7 +43,7 @@ export interface BannerEvent {
 type BannerListener = (e: BannerEvent) => void;
 
 let permissionRequested = false;
-let channelsRegistered: Record<string, true> = {};
+const channelsRegistered: Record<string, true> = {};
 const bannerListeners = new Set<BannerListener>();
 
 const DEFAULT_CHANNELS: Record<NotificationKind, ChannelSpec> = {

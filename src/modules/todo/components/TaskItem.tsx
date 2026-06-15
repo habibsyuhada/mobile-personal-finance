@@ -13,6 +13,7 @@ import type { Task } from '../data/models';
 import { useT } from '@/i18n/useT';
 import { formatDate } from '@/lib/date';
 import { useSettingsStore } from '@/store/settings.store';
+import { haptics } from '@/lib/haptics';
 
 const PRIORITY_COLOR = ['#94a3b8', '#0ea5e9', '#f59e0b', '#ef4444'];
 
@@ -32,37 +33,56 @@ export default function TaskItem({ task, onToggle, onEdit, onDelete }: Props) {
 
   return (
     <IonItemSliding>
-      <IonItem className="tx-item">
-        <IonCheckbox
+      <IonItem
+        className="tx-item"
+        style={{
+          transition: 'opacity 280ms ease, transform 320ms ease',
+          opacity: task.completed ? 0.55 : 1,
+        }}
+      >
+        {/* Priority ring (kiri) */}
+        <div
           slot="start"
-          checked={task.completed}
-          onIonChange={() => onToggle(task)}
-          aria-label={task.title}
-        />
-        <IonLabel
-          onClick={() => onEdit(task)}
+          aria-hidden="true"
           style={{
-            textDecoration: task.completed ? 'line-through' : 'none',
-            opacity: task.completed ? 0.55 : 1,
+            width: 4,
+            alignSelf: 'stretch',
+            borderRadius: 4,
+            background:
+              task.priority > 0
+                ? `linear-gradient(180deg, ${PRIORITY_COLOR[task.priority]}, ${PRIORITY_COLOR[task.priority]}88)`
+                : 'transparent',
+            marginRight: 12,
           }}
-        >
-          <h2>
-            {task.priority > 0 && (
-              <span
-                style={{
-                  display: 'inline-block',
-                  width: 8,
-                  height: 8,
-                  borderRadius: 4,
-                  marginRight: 8,
-                  background: PRIORITY_COLOR[task.priority],
-                }}
+        />
+
+        <IonCheckbox
+          checked={task.completed}
+          onIonChange={() => {
+            haptics.medium();
+            onToggle(task);
+          }}
+          aria-label={task.title}
+          style={{ marginRight: 12 }}
+        />
+
+        <IonLabel onClick={() => onEdit(task)}>
+          <h2
+            style={{
+              textDecoration: task.completed ? 'line-through' : 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+            }}
+          >
+            {task.starred && (
+              <IonIcon
+                icon={star}
+                style={{ color: '#f59e0b', fontSize: 14 }}
+                aria-label="Starred"
               />
             )}
             {task.title}
-            {task.starred && (
-              <IonIcon icon={star} style={{ color: '#f59e0b', marginLeft: 6, fontSize: 14 }} />
-            )}
           </h2>
           {task.dueAt && (
             <p style={{ color: overdue ? 'var(--app-expense)' : undefined }}>
@@ -72,6 +92,7 @@ export default function TaskItem({ task, onToggle, onEdit, onDelete }: Props) {
           )}
           {task.note && <p>{task.note}</p>}
         </IonLabel>
+
         {task.subtasks && task.subtasks.length > 0 && (
           <IonNote slot="end">
             {task.subtasks.filter((s) => s.completed).length}/{task.subtasks.length}
@@ -79,10 +100,10 @@ export default function TaskItem({ task, onToggle, onEdit, onDelete }: Props) {
         )}
       </IonItem>
       <IonItemOptions side="end">
-        <IonItemOption onClick={() => onEdit(task)}>
+        <IonItemOption onClick={() => { haptics.tap(); onEdit(task); }}>
           <IonIcon slot="icon-only" icon={editIcon} />
         </IonItemOption>
-        <IonItemOption color="danger" onClick={() => onDelete(task)}>
+        <IonItemOption color="danger" onClick={() => { haptics.tap(); onDelete(task); }}>
           <IonIcon slot="icon-only" icon={trash} />
         </IonItemOption>
       </IonItemOptions>

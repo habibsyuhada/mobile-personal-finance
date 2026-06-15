@@ -269,4 +269,19 @@ export const id = {
   'habit.weekday.fri': 'Jum',
   'habit.weekday.sat': 'Sab',
   'habit.weekday.sun': 'Min',
+  'habit.achievement.title': 'Pencapaian Baru!',
+  'habit.achievement.body': 'Hebat! Rentetan {name} mencapai {days} hari.',
+
+  // Notifikasi
+  'notif.title': 'Notifikasi',
+  'notif.habit.title': 'Pengingat Habit',
+  'notif.task.title': 'Tenggat Tugas',
+  'notif.finance.title': 'Ringkasan Hari Ini',
+  'notif.enabled.habit': 'Pengingat Habit',
+  'notif.enabled.task': 'Tenggat Tugas',
+  'notif.enabled.finance': 'Ringkasan Keuangan',
+  'notif.financeTime': 'Waktu ringkasan harian',
+  'notif.permissionRequest': 'Aktifkan notifikasi?',
+  'notif.permissionBody': 'Kami akan mengingatkan habit, tenggat tugas, dan ringkasan keuangan.',
+  'notif.taskDue': 'Tenggat tiba: {title}',
 };

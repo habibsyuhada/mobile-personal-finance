@@ -9,21 +9,22 @@ import {
   IonButton,
   IonIcon,
   IonList,
-  IonItem,
-  IonLabel,
   IonFab,
   IonFabButton,
-  IonCheckbox,
-  IonNote,
   IonRefresher,
   IonRefresherContent,
+  useIonAlert,
 } from '@ionic/react';
-import { add, appsOutline, removeCircle, addCircle, flame } from 'ionicons/icons';
+import { add, appsOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { useHabitStore } from '../store/habit.store';
-import { iconForCategory } from '@/lib/categoryIcons';
+import { useHabitStore, habitService } from '../store/habit.store';
 import { useT } from '@/i18n/useT';
 import HabitForm from '../components/HabitForm';
+import HabitRow from '../components/HabitRow';
+import { haptics } from '@/lib/haptics';
+import { checkAchievements } from '../lib/achievements';
+import { currentStreak } from '../lib/schedule';
+import { useCelebration } from '@/store/celebration.store';
 import type { Habit } from '../data/models';
 
 export default function TodayHabitsPage() {
@@ -32,15 +33,87 @@ export default function TodayHabitsPage() {
   const refreshHabits = useHabitStore((s) => s.refreshHabits);
   const toggleBinary = useHabitStore((s) => s.toggleBinary);
   const addAmount = useHabitStore((s) => s.addAmount);
+  const archiveHabit = useHabitStore((s) => s.archiveHabit);
+  const deleteHabit = useHabitStore((s) => s.deleteHabit);
   const tr = useT();
   const history = useHistory();
+  const [presentAlert] = useIonAlert();
+  const showCelebration = useCelebration((s) => s.show);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Habit | null>(null);
+  const [streaks, setStreaks] = useState<Record<string, number>>({});
 
   useEffect(() => {
     refreshHabits();
     refreshToday();
   }, [refreshHabits, refreshToday]);
+
+  // Hitung streak per habit saat daftar berubah.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const result: Record<string, number> = {};
+      for (const { habit } of today) {
+        const logs = await habitService().logsForHabit(habit.id);
+        result[habit.id] = currentStreak(habit, logs);
+      }
+      if (!cancelled) setStreaks(result);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [today]);
+
+  const handleToggle = async (habit: Habit) => {
+    await toggleBinary(habit);
+    const logs = await habitService().logsForHabit(habit.id);
+    const streak = currentStreak(habit, logs);
+    setStreaks((s) => ({ ...s, [habit.id]: streak }));
+    if (streak > 0) {
+      const newBadges = await checkAchievements(habit.id, streak);
+      if (newBadges.length > 0) {
+        haptics.success();
+        const last = newBadges[newBadges.length - 1];
+        showCelebration('🏆');
+        presentAlert({
+          header: tr('habit.achievement.title'),
+          message: tr('habit.achievement.body', { days: last, name: habit.name }),
+          buttons: ['OK'],
+        });
+      } else {
+        showCelebration('✨');
+      }
+    } else {
+      showCelebration('✨');
+    }
+  };
+
+  const handleAdd = async (habit: Habit, delta: number) => {
+    await addAmount(habit, delta);
+    const logs = await habitService().logsForHabit(habit.id);
+    const streak = currentStreak(habit, logs);
+    setStreaks((s) => ({ ...s, [habit.id]: streak }));
+    if (streak > 0) {
+      const newBadges = await checkAchievements(habit.id, streak);
+      if (newBadges.length > 0) {
+        haptics.success();
+        showCelebration('🏆');
+      } else if (delta > 0) {
+        haptics.tap();
+      }
+    }
+  };
+
+  const confirmDelete = (h: Habit) => {
+    presentAlert({
+      header: tr('habit.deleteTitle'),
+      message: tr('habit.deleteMsg'),
+      buttons: [
+        { text: tr('common.cancel'), role: 'cancel' },
+        { text: tr('common.delete'), role: 'destructive', handler: () => deleteHabit(h.id) },
+      ],
+    });
+  };
 
   return (
     <IonPage>
@@ -65,47 +138,20 @@ export default function TodayHabitsPage() {
           </div>
         ) : (
           <IonList lines="none">
-            {today.map(({ habit, amount, done }) => (
-              <IonItem key={habit.id} className="tx-item">
-                <div
-                  className="cat-avatar"
-                  slot="start"
-                  style={{ background: habit.color ?? '#94a3b8', opacity: done ? 1 : 0.6 }}
-                >
-                  <IonIcon icon={iconForCategory(habit.icon)} />
-                </div>
-                <IonLabel>
-                  <h2>{habit.name}</h2>
-                  {habit.type === 'quantifiable' && (
-                    <p>
-                      {amount} / {habit.target} {habit.unit ?? ''}
-                    </p>
-                  )}
-                </IonLabel>
-
-                {habit.type === 'binary' ? (
-                  <IonCheckbox
-                    slot="end"
-                    checked={done}
-                    onIonChange={() => toggleBinary(habit)}
-                    aria-label={habit.name}
-                  />
-                ) : (
-                  <div slot="end" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <IonButton fill="clear" onClick={() => addAmount(habit, -1)}>
-                      <IonIcon slot="icon-only" icon={removeCircle} />
-                    </IonButton>
-                    <IonButton fill="clear" onClick={() => addAmount(habit, 1)}>
-                      <IonIcon slot="icon-only" icon={addCircle} />
-                    </IonButton>
-                  </div>
-                )}
-                {done && (
-                  <IonNote slot="end" color="warning" style={{ display: 'flex', alignItems: 'center' }}>
-                    <IonIcon icon={flame} />
-                  </IonNote>
-                )}
-              </IonItem>
+            {today.map((p) => (
+              <HabitRow
+                key={p.habit.id}
+                progress={p}
+                streak={streaks[p.habit.id] ?? 0}
+                onToggle={handleToggle}
+                onAdd={handleAdd}
+                onEdit={(h) => {
+                  setEditing(h);
+                  setFormOpen(true);
+                }}
+                onDelete={confirmDelete}
+                onArchive={(h) => archiveHabit(h.id, !h.archived)}
+              />
             ))}
           </IonList>
         )}

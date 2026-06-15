@@ -22,6 +22,8 @@ import type { Task, TaskFilter } from '../data/models';
 import TaskItem from '../components/TaskItem';
 import TaskForm from '../components/TaskForm';
 import { useT } from '@/i18n/useT';
+import { haptics } from '@/lib/haptics';
+import { useCelebration } from '@/store/celebration.store';
 
 const FILTER: TaskFilter = { view: 'today' };
 
@@ -34,6 +36,7 @@ export default function TodayPage() {
   const tr = useT();
   const history = useHistory();
   const [presentAlert] = useIonAlert();
+  const showCelebration = useCelebration((s) => s.show);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
 
@@ -84,7 +87,15 @@ export default function TodayPage() {
               <TaskItem
                 key={t.id}
                 task={t}
-                onToggle={(task) => toggle(task, FILTER)}
+                onToggle={(task) => {
+                  if (!task.completed) {
+                    haptics.success();
+                    showCelebration('✅');
+                  } else {
+                    haptics.tap();
+                  }
+                  toggle(task, FILTER);
+                }}
                 onEdit={(task) => {
                   setEditing(task);
                   setFormOpen(true);

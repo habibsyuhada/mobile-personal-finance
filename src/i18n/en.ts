@@ -271,4 +271,19 @@ export const en: Record<keyof typeof id, string> = {
   'habit.weekday.fri': 'Fri',
   'habit.weekday.sat': 'Sat',
   'habit.weekday.sun': 'Sun',
+  'habit.achievement.title': 'New Achievement!',
+  'habit.achievement.body': 'Awesome! {name} streak reached {days} days.',
+
+  // Notifications
+  'notif.title': 'Notifications',
+  'notif.habit.title': 'Habit Reminder',
+  'notif.task.title': 'Task Deadline',
+  'notif.finance.title': 'Daily Summary',
+  'notif.enabled.habit': 'Habit Reminders',
+  'notif.enabled.task': 'Task Deadlines',
+  'notif.enabled.finance': 'Finance Summary',
+  'notif.financeTime': 'Daily summary time',
+  'notif.permissionRequest': 'Enable notifications?',
+  'notif.permissionBody': "We'll remind you about habits, task deadlines, and a daily finance summary.",
+  'notif.taskDue': 'Due now: {title}',
 };

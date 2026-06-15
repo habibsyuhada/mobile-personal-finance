@@ -12,6 +12,8 @@ import Launcher from './Launcher';
 import ModuleHost from './ModuleHost';
 import GlobalSettings from './GlobalSettings';
 import { BannerHost } from './BannerHost';
+import { Celebration } from './Celebration';
+import { useCelebration } from '@/store/celebration.store';
 
 /* Ionic core + utility CSS */
 import '@ionic/react/css/core.css';
@@ -134,6 +136,13 @@ export default function App() {
         </IonRouterOutlet>
       </IonReactRouter>
       <BannerHost />
+      <CelebrationOverlay />
     </IonApp>
   );
+}
+
+function CelebrationOverlay() {
+  const emoji = useCelebration((s) => s.emoji);
+  const clear = useCelebration((s) => s.clear);
+  return <Celebration show={!!emoji} emoji={emoji ?? '✨'} onDone={clear} />;
 }

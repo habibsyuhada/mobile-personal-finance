@@ -27,6 +27,7 @@ import { iconForCategory } from '@/lib/categoryIcons';
 import { useT } from '@/i18n/useT';
 import HabitForm from '../components/HabitForm';
 import Heatmap from '../components/Heatmap';
+import { MILESTONES, MILESTONE_META, unlockedFor } from '../lib/achievements';
 import type { Habit, HabitLog, HabitStats } from '../data/models';
 
 export default function AllHabitsPage() {
@@ -42,6 +43,7 @@ export default function AllHabitsPage() {
   const [detail, setDetail] = useState<Habit | null>(null);
   const [stats, setStats] = useState<HabitStats | null>(null);
   const [logs, setLogs] = useState<HabitLog[]>([]);
+  const [unlockedBadges, setUnlockedBadges] = useState<number[]>([]);
 
   useEffect(() => {
     refreshHabits();
@@ -52,6 +54,7 @@ export default function AllHabitsPage() {
     (async () => {
       setStats(await habitService().stats(detail.id));
       setLogs(await habitService().logsForHabit(detail.id));
+      setUnlockedBadges(await unlockedFor(detail.id));
     })();
   }, [detail]);
 
@@ -115,6 +118,42 @@ export default function AllHabitsPage() {
                     {tr('habit.completionRate')}
                   </div>
                 </div>
+              </div>
+            </IonCardContent>
+          </IonCard>
+
+          <IonCard>
+            <IonCardContent>
+              <p style={{ fontWeight: 600, marginTop: 0 }}>🏆 Achievements</p>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
+                  gap: 8,
+                }}
+              >
+                {MILESTONES.map((m) => {
+                  const unlocked = unlockedBadges.includes(m);
+                  return (
+                    <div
+                      key={m}
+                      title={`${m} days`}
+                      style={{
+                        textAlign: 'center',
+                        padding: 8,
+                        borderRadius: 12,
+                        background: unlocked ? 'rgba(245,158,11,0.15)' : 'rgba(120,120,120,0.08)',
+                        opacity: unlocked ? 1 : 0.4,
+                        transition: 'transform 200ms ease, opacity 200ms ease',
+                      }}
+                    >
+                      <div style={{ fontSize: 28, filter: unlocked ? 'none' : 'grayscale(1)' }}>
+                        {MILESTONE_META.find((x) => x.milestone === m)?.emoji ?? '🎯'}
+                      </div>
+                      <div style={{ fontSize: 11, fontWeight: 600, marginTop: 4 }}>{m}d</div>
+                    </div>
+                  );
+                })}
               </div>
             </IonCardContent>
           </IonCard>
