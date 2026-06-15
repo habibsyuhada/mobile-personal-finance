@@ -22,10 +22,18 @@ export interface ModuleDescriptor {
   routePath: string; // '/m/finance'
   // Komponen root modul (lazy untuk code-split).
   component: () => Promise<{ default: ComponentType }>;
-  // Migrasi tabel khusus modul (opsional di Fase A).
+  // Migrasi tabel khusus modul.
   migrations?: ModuleMigration[];
   // Hook opsional setelah migrasi (seed, proses jadwal).
   init?: (db: Database) => Promise<void>;
   // Nama tabel yang dimiliki modul (untuk ekspor/impor).
   tables?: string[];
+  /**
+   * Jadwalkan ulang SEMUA reminder milik modul. Dipanggil shell saat app
+   * boot, setelah restore/import, dan saat modul diaktifkan/dimatikan.
+   * Modul mengelola channel & ID-nya sendiri.
+   */
+  scheduleReminders?: () => Promise<void>;
+  /** Batalkan SEMUA reminder milik modul (mis. saat modul disabled). */
+  cancelAllReminders?: () => Promise<void>;
 }

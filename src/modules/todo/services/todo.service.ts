@@ -1,6 +1,7 @@
 import type { ITodoRepository } from '../data/todo.repo';
 import type { NewTask, Task, TaskFilter } from '../data/models';
 import { advanceDate } from '@/lib/recurrence';
+import { Notifications } from '@/platform/notifications';
 
 export class TodoValidationError extends Error {
   constructor(message: string) {
@@ -106,5 +107,34 @@ export class TodoService {
   }
   setTaskTags(taskId: string, tagIds: string[]) {
     return this.repo.setTaskTags(taskId, tagIds);
+  }
+
+  /** Jadwalkan reminder due-date untuk satu task. */
+  async scheduleReminder(task: Task): Promise<void> {
+    await Notifications.cancel(`task:${task.id}`);
+    if (task.completed || !task.dueAt) return;
+    const at = new Date(task.dueAt);
+    if (Number.isNaN(at.getTime())) return;
+    // Jika all-day (tanpa jam), trigger jam 9 pagi di tanggal due.
+    if (!task.hasTime) at.setHours(9, 0, 0, 0);
+    if (at.getTime() <= Date.now()) return; // lewat
+    await Notifications.schedule({
+      id: `task:${task.id}`,
+      title: 'Tenggat Tugas',
+      body: task.title,
+      at: at.toISOString(),
+      channel: Notifications.channelFor('task').id,
+      extra: {
+        kind: 'task',
+        taskId: task.id,
+        icon: null,
+        categoryColor: null,
+        priority: task.priority,
+      },
+    });
+  }
+
+  async cancelReminder(taskId: string): Promise<void> {
+    await Notifications.cancel(`task:${taskId}`);
   }
 }

@@ -17,3 +17,31 @@ export function enabledModules(): ModuleDescriptor[] {
 export function getModule(id: string): ModuleDescriptor | null {
   return MODULES.find((m) => m.id === id) ?? null;
 }
+
+/**
+ * Panggil scheduleReminders() untuk semua modul yang enabled.
+ * Kegagalan satu modul tidak menggagalkan yang lain.
+ */
+export async function runModuleScheduleReminders(): Promise<void> {
+  for (const mod of enabledModules()) {
+    if (!mod.scheduleReminders) continue;
+    try {
+      await mod.scheduleReminders();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(`scheduleReminders failed for "${mod.id}":`, e);
+    }
+  }
+}
+
+export async function cancelAllModuleReminders(): Promise<void> {
+  for (const mod of MODULES) {
+    if (!mod.cancelAllReminders) continue;
+    try {
+      await mod.cancelAllReminders();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(`cancelAllReminders failed for "${mod.id}":`, e);
+    }
+  }
+}

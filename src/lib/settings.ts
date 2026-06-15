@@ -15,6 +15,10 @@ const KEYS = {
   aiEndpoint: 'pref.ai.endpoint',
   aiModel: 'pref.ai.model',
   aiApiKey: 'pref.ai.apiKey',
+  notifHabitEnabled: 'pref.notif.habit.enabled',
+  notifTaskEnabled: 'pref.notif.task.enabled',
+  notifFinanceEnabled: 'pref.notif.finance.enabled',
+  notifFinanceTime: 'pref.notif.finance.time', // 'HH:mm'
 } as const;
 
 export type ThemeMode = 'light' | 'dark' | 'system';
@@ -27,6 +31,10 @@ export interface AppSettings {
   aiEndpoint: string;
   aiModel: string;
   aiApiKey: string;
+  notifHabitEnabled: boolean;
+  notifTaskEnabled: boolean;
+  notifFinanceEnabled: boolean;
+  notifFinanceTime: string; // 'HH:mm'
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -37,6 +45,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
   aiEndpoint: 'https://openai.bacanovelindo.casa/v1',
   aiModel: 'openrouter/google/gemma-4-31b-it:free',
   aiApiKey: '',
+  notifHabitEnabled: true,
+  notifTaskEnabled: true,
+  notifFinanceEnabled: true,
+  notifFinanceTime: '20:00',
 };
 
 async function get(key: string, fallback: string): Promise<string> {
@@ -45,16 +57,31 @@ async function get(key: string, fallback: string): Promise<string> {
 }
 
 export async function loadSettings(): Promise<AppSettings> {
-  const [theme, language, currency, locale, aiEndpoint, aiModel, aiApiKey] =
-    await Promise.all([
-      get(KEYS.theme, DEFAULT_SETTINGS.theme),
-      get(KEYS.language, DEFAULT_SETTINGS.language),
-      get(KEYS.currency, DEFAULT_SETTINGS.currency),
-      get(KEYS.locale, DEFAULT_SETTINGS.locale),
-      get(KEYS.aiEndpoint, DEFAULT_SETTINGS.aiEndpoint),
-      get(KEYS.aiModel, DEFAULT_SETTINGS.aiModel),
-      get(KEYS.aiApiKey, DEFAULT_SETTINGS.aiApiKey),
-    ]);
+  const [
+    theme,
+    language,
+    currency,
+    locale,
+    aiEndpoint,
+    aiModel,
+    aiApiKey,
+    notifHabitEnabled,
+    notifTaskEnabled,
+    notifFinanceEnabled,
+    notifFinanceTime,
+  ] = await Promise.all([
+    get(KEYS.theme, DEFAULT_SETTINGS.theme),
+    get(KEYS.language, DEFAULT_SETTINGS.language),
+    get(KEYS.currency, DEFAULT_SETTINGS.currency),
+    get(KEYS.locale, DEFAULT_SETTINGS.locale),
+    get(KEYS.aiEndpoint, DEFAULT_SETTINGS.aiEndpoint),
+    get(KEYS.aiModel, DEFAULT_SETTINGS.aiModel),
+    get(KEYS.aiApiKey, DEFAULT_SETTINGS.aiApiKey),
+    get(KEYS.notifHabitEnabled, 'true'),
+    get(KEYS.notifTaskEnabled, 'true'),
+    get(KEYS.notifFinanceEnabled, 'true'),
+    get(KEYS.notifFinanceTime, DEFAULT_SETTINGS.notifFinanceTime),
+  ]);
   return {
     theme: theme as ThemeMode,
     language: language as Language,
@@ -63,6 +90,10 @@ export async function loadSettings(): Promise<AppSettings> {
     aiEndpoint,
     aiModel,
     aiApiKey,
+    notifHabitEnabled: notifHabitEnabled !== 'false',
+    notifTaskEnabled: notifTaskEnabled !== 'false',
+    notifFinanceEnabled: notifFinanceEnabled !== 'false',
+    notifFinanceTime,
   };
 }
 
@@ -78,6 +109,10 @@ export async function saveSetting<K extends keyof AppSettings>(
     aiEndpoint: KEYS.aiEndpoint,
     aiModel: KEYS.aiModel,
     aiApiKey: KEYS.aiApiKey,
+    notifHabitEnabled: KEYS.notifHabitEnabled,
+    notifTaskEnabled: KEYS.notifTaskEnabled,
+    notifFinanceEnabled: KEYS.notifFinanceEnabled,
+    notifFinanceTime: KEYS.notifFinanceTime,
   };
   await Preferences.set({ key: map[key], value: String(value) });
 }

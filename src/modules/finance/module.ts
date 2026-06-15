@@ -5,6 +5,7 @@ import { FINANCE_MIGRATIONS } from './data/finance-migrations';
 import { initData, getRepositories } from './data';
 import { seedDefaultCategories } from './data/seed';
 import { initServices, getServices } from './services';
+import { scheduleFinanceSummary, cancelFinanceSummary } from './features/notifications';
 
 // Init modul keuangan: siapkan repositories & services di atas DB bersama,
 // seed kategori default, lalu proses transaksi berulang yang jatuh tempo.
@@ -13,6 +14,14 @@ async function initFinance(_db: Database): Promise<void> {
   await seedDefaultCategories(getRepositories().categories);
   initServices();
   await getServices().recurring.processDue();
+}
+
+async function scheduleFinanceReminders(): Promise<void> {
+  await scheduleFinanceSummary();
+}
+
+async function cancelFinanceReminders(): Promise<void> {
+  await cancelFinanceSummary();
 }
 
 export const financeModule: ModuleDescriptor = {
@@ -35,4 +44,6 @@ export const financeModule: ModuleDescriptor = {
     'budgets',
     'recurring_rules',
   ],
+  scheduleReminders: scheduleFinanceReminders,
+  cancelAllReminders: cancelFinanceReminders,
 };

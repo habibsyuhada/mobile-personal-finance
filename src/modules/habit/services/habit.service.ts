@@ -8,6 +8,7 @@ import {
   isScheduledOn,
   isFulfilledOn,
 } from '../lib/schedule';
+import { Notifications } from '@/platform/notifications';
 
 export class HabitValidationError extends Error {
   constructor(message: string) {
@@ -96,5 +97,35 @@ export class HabitService {
 
   logsForHabit(habitId: string) {
     return this.repo.logsForHabit(habitId);
+  }
+
+  /** Jadwalkan reminder harian untuk satu habit (cancel dulu yg lama). */
+  async scheduleReminder(habit: Habit): Promise<void> {
+    await Notifications.cancel(`habit:${habit.id}`);
+    if (habit.archived || !habit.reminderTime) return;
+    const [hh, mm] = habit.reminderTime.split(':').map(Number);
+    if (Number.isNaN(hh) || Number.isNaN(mm)) return;
+    const now = new Date();
+    const next = new Date();
+    next.setHours(hh, mm, 0, 0);
+    if (next.getTime() <= now.getTime()) next.setDate(next.getDate() + 1);
+    await Notifications.schedule({
+      id: `habit:${habit.id}`,
+      title: 'Habit Reminder',
+      body: `Waktunya: ${habit.name}`,
+      at: next.toISOString(),
+      channel: Notifications.channelFor('habit').id,
+      extra: {
+        kind: 'habit',
+        habitId: habit.id,
+        icon: habit.icon ?? null,
+        categoryColor: habit.color ?? null,
+      },
+    });
+  }
+
+  /** Batalkan reminder untuk satu habit. */
+  async cancelReminder(habitId: string): Promise<void> {
+    await Notifications.cancel(`habit:${habitId}`);
   }
 }

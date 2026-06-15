@@ -54,23 +54,30 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   },
 
   addTask: async (input) => {
-    await todoService().createTask(input);
+    const created = await todoService().createTask(input);
+    await todoService().scheduleReminder(created);
     await get().refreshLists();
   },
 
   editTask: async (id, patch, filter) => {
-    await todoService().updateTask(id, patch);
+    const updated = await todoService().updateTask(id, patch);
+    await todoService().scheduleReminder(updated);
     await get().loadTasks(filter);
     await get().refreshLists();
   },
 
   toggle: async (task, filter) => {
     await todoService().toggleComplete(task);
+    // Selesai -> cancel reminder; toggle ke uncompleted -> reschedule.
+    const fresh = await todoService().getTask(task.id);
+    if (fresh) await todoService().scheduleReminder(fresh);
+    else await todoService().cancelReminder(task.id);
     await get().loadTasks(filter);
     await get().refreshLists();
   },
 
   deleteTask: async (id, filter) => {
+    await todoService().cancelReminder(id);
     await todoService().removeTask(id);
     await get().loadTasks(filter);
     await get().refreshLists();

@@ -46,24 +46,33 @@ export const useHabitStore = create<HabitState>((set, get) => ({
   },
 
   addHabit: async (input) => {
-    await habitService().create(input);
+    const created = await habitService().create(input);
+    await habitService().scheduleReminder(created);
     await get().refreshHabits();
     await get().refreshToday();
   },
 
   editHabit: async (id, patch) => {
-    await habitService().update(id, patch);
+    const updated = await habitService().update(id, patch);
+    await habitService().scheduleReminder(updated);
     await get().refreshHabits();
     await get().refreshToday();
   },
 
   archiveHabit: async (id, archived) => {
     await habitService().archive(id, archived);
+    if (archived) {
+      await habitService().cancelReminder(id);
+    } else {
+      const updated = await habitService().getById(id);
+      if (updated) await habitService().scheduleReminder(updated);
+    }
     await get().refreshHabits();
     await get().refreshToday();
   },
 
   deleteHabit: async (id) => {
+    await habitService().cancelReminder(id);
     await habitService().remove(id);
     await get().refreshHabits();
     await get().refreshToday();

@@ -14,6 +14,17 @@ interface SettingsState extends AppSettings {
   set: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => Promise<void>;
 }
 
+type NotifChangeListener = (
+  changes: Partial<Pick<AppSettings, 'notifFinanceEnabled' | 'notifFinanceTime' | 'notifHabitEnabled' | 'notifTaskEnabled'>>
+) => void;
+const notifListeners = new Set<NotifChangeListener>();
+
+/** Dipanggil modul untuk reaktif terhadap perubahan setting notifikasi. */
+export function onNotifSettingChange(fn: NotifChangeListener): () => void {
+  notifListeners.add(fn);
+  return () => notifListeners.delete(fn);
+}
+
 function applyTheme(theme: ThemeMode) {
   const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
   const dark = theme === 'dark' || (theme === 'system' && prefersDark);
@@ -42,6 +53,17 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       await saveSetting('locale', locale);
       set({ locale });
       document.documentElement.lang = lang;
+    }
+    // Beri tahu listener kalau ada perubahan terkait notifikasi.
+    const notifKeys: (keyof AppSettings)[] = [
+      'notifFinanceEnabled',
+      'notifFinanceTime',
+      'notifHabitEnabled',
+      'notifTaskEnabled',
+    ];
+    if (notifKeys.includes(key)) {
+      const changes: Record<string, unknown> = { [key]: value };
+      for (const l of notifListeners) l(changes);
     }
     void get;
   },

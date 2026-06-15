@@ -5,7 +5,8 @@ import { Redirect, Route } from 'react-router-dom';
 import { initDatabase, getDatabase } from '@/data/db/database';
 import { runModuleMigrations, runModuleInit } from '@/platform/migrations';
 import { Notifications } from '@/platform/notifications';
-import { useSettingsStore } from '@/store/settings.store';
+import { runModuleScheduleReminders } from '@/platform/registry';
+import { useSettingsStore, onNotifSettingChange } from '@/store/settings.store';
 import { useBannerStore } from '@/store/banner.store';
 import Launcher from './Launcher';
 import ModuleHost from './ModuleHost';
@@ -50,6 +51,25 @@ function bootstrapOnce(): Promise<void> {
           meta: e.meta,
           at: e.at,
         });
+      });
+      // Minta tiap modul menjadwalkan reminder-nya.
+      await runModuleScheduleReminders();
+      // Re-schedule ulang saat user mengubah setting notifikasi.
+      onNotifSettingChange((changes) => {
+        if (
+          'notifFinanceEnabled' in changes ||
+          'notifFinanceTime' in changes
+        ) {
+          import('@/modules/finance/features/notifications').then((m) =>
+            m.scheduleFinanceSummary()
+          );
+        }
+        if ('notifHabitEnabled' in changes) {
+          runModuleScheduleReminders();
+        }
+        if ('notifTaskEnabled' in changes) {
+          runModuleScheduleReminders();
+        }
       });
     })();
   }
