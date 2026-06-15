@@ -21,6 +21,7 @@ import {
 import { arrowDownOutline, arrowUpOutline, appsOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { iconForCategory, colorForCategory, transferIcon } from '@/lib/categoryIcons';
+import { RollingNumber } from '@/lib/RollingNumber';
 import { useFinanceStore } from '@/modules/finance/store/finance.store';
 import { getServices } from '@/modules/finance/services';
 import { useFormatMoney } from '@/lib/useFormatMoney';
@@ -81,7 +82,7 @@ export default function DashboardPage() {
               {tr('dashboard.netWorth')}
             </div>
             <div style={{ color: '#fff', fontSize: 32, fontWeight: 800, marginTop: 4, letterSpacing: '-0.5px' }}>
-              {fmt(netWorth)}
+              <RollingNumber value={netWorth} format={(n) => fmt(n)} />
             </div>
             <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: 8 }}>
               {tr('dashboard.accounts', { count: accounts.length })}
@@ -110,7 +111,9 @@ export default function DashboardPage() {
                 <IonIcon icon={arrowDownOutline} style={{ color: 'var(--app-income)', fontSize: 20 }} />
               </div>
               <div className="summary-label">{tr('dashboard.income')}</div>
-              <div className="summary-value amount-income">{fmt(totals.income)}</div>
+              <div className="summary-value amount-income">
+                <RollingNumber value={totals.income} format={(n) => fmt(n)} />
+              </div>
             </IonCardContent>
           </IonCard>
           <IonCard className="summary-card">
@@ -119,7 +122,9 @@ export default function DashboardPage() {
                 <IonIcon icon={arrowUpOutline} style={{ color: 'var(--app-expense)', fontSize: 20 }} />
               </div>
               <div className="summary-label">{tr('dashboard.expense')}</div>
-              <div className="summary-value amount-expense">{fmt(totals.expense)}</div>
+              <div className="summary-value amount-expense">
+                <RollingNumber value={totals.expense} format={(n) => fmt(n)} />
+              </div>
             </IonCardContent>
           </IonCard>
         </div>
