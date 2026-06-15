@@ -68,7 +68,10 @@ const DEFAULT_CHANNELS: Record<NotificationKind, ChannelSpec> = {
 };
 
 function isNative(): boolean {
-  return Capacitor.isPluginAvailable('LocalNotifications');
+  // Plugin web @capacitor/local-notifications auto-register di browser,
+  // tapi createChannel() melempar "Not implemented on web". Jadi deteksi
+  // berdasarkan platform, bukan plugin availability.
+  return Capacitor.getPlatform() === 'android' || Capacitor.getPlatform() === 'ios';
 }
 
 /** Hash 32-bit stabil dari string; cocok untuk notification ID Android. */
