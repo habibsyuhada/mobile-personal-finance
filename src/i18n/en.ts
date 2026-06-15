@@ -180,6 +180,12 @@ export const en: Record<keyof typeof id, string> = {
   'launcher.settings': 'Settings',
   'launcher.moduleUnavailable': 'Module unavailable.',
   'launcher.backToHome': 'Back to Home',
+  'launcher.greeting.morning': 'Good morning',
+  'launcher.greeting.afternoon': 'Good afternoon',
+  'launcher.greeting.evening': 'Good evening',
+  'launcher.you': 'you',
+  'launcher.noModules': 'No modules installed yet.',
+  'launcher.offlineNote': 'All data is stored locally on this device.',
 
   // Module names
   'module.finance.name': 'Finance',

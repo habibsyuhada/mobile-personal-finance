@@ -178,6 +178,12 @@ export const id = {
   'launcher.settings': 'Pengaturan',
   'launcher.moduleUnavailable': 'Modul tidak tersedia.',
   'launcher.backToHome': 'Kembali ke Beranda',
+  'launcher.greeting.morning': 'Selamat pagi',
+  'launcher.greeting.afternoon': 'Selamat siang',
+  'launcher.greeting.evening': 'Selamat malam',
+  'launcher.you': 'Anda',
+  'launcher.noModules': 'Belum ada modul terpasang.',
+  'launcher.offlineNote': 'Semua data tersimpan lokal di perangkat ini.',
 
   // Nama modul
   'module.finance.name': 'Keuangan',
