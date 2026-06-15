@@ -10,9 +10,10 @@ berbagi shell, tema, penyimpanan, dan i18n yang sama.
 | Modul | Status | Spec |
 |---|---|---|
 | Platform (shell + launcher) | Selesai (Fase A–E) | [specs/platform](./specs/platform/) |
-| Keuangan (Personal Finance) | Selesai (MVP) | [specs/personal-finance](./specs/personal-finance/) |
-| Todo List | Selesai (MVP) | [specs/todo](./specs/todo/) |
-| Habit Tracker | Selesai (MVP) | [specs/habit-tracker](./specs/habit-tracker/) |
+| Keuangan (Personal Finance) | Selesai (MVP + daily summary notif) | [specs/personal-finance](./specs/personal-finance/) |
+| Todo List | Selesai (MVP + due-date notif) | [specs/todo](./specs/todo/) |
+| Habit Tracker | Selesai (MVP + reminder notif + achievements) | [specs/habit-tracker](./specs/habit-tracker/) |
+| Notifikasi (lintas modul) | Selesai (channels + in-app banner) | (built into platform/) |
 | Kandidat modul lain | Backlog | [specs/module-catalog.md](./specs/module-catalog.md) |
 
 ## Cara membaca
@@ -48,3 +49,17 @@ berbagi shell, tema, penyimpanan, dan i18n yang sama.
 - English jadi bahasa default; tersedia Bahasa Indonesia.
 - Aplikasi bertransformasi dari "aplikasi keuangan" menjadi "personal super app"
   multi-modul. Keuangan menjadi modul pertama, bukan keseluruhan aplikasi.
+- **Fase A–E platform selesai**: launcher, module registry, migrasi per-modul
+  ber-namespace, route `/m/:moduleId`, App bootstrap module-agnostic. Spec
+  lengkap di [specs/platform/tasks.md](./specs/platform/tasks.md).
+- **Notifikasi lintas modul**: plugin `@capacitor/local-notifications` (Android
+  channels) + in-app banner fallback (web). Tiap modul (Finance, Todo, Habit)
+  punya channel sendiri dan menjadwalkan reminder via `scheduleReminders` di
+  module descriptor. Finance daily summary dapat dikonfigurasi user
+  (default 20:00). Permission POST_NOTIFICATIONS ditambahkan di AndroidManifest.
+- **Premium polish**: progress ring (Habit quantifiable), achievement badges
+  (Habit — milestone 3, 7, 14, 30, 60, 100, 365 hari, disimpan lokal), animated
+  check-off + haptics (semua modul), priority ring (Task), celebration overlay,
+  dark mode konsisten.
+- **3 modul fungsional** (Finance, Todo, Habit) — menambah modul berikutnya
+  cukup tambah deskriptor di registry + folder modul baru.
