@@ -25,6 +25,7 @@ import TaskForm from '../components/TaskForm';
 import { useT } from '@/i18n/useT';
 import { haptics } from '@/lib/haptics';
 import { useCelebration } from '@/store/celebration.store';
+import ModuleEmpty from '@/lib/ModuleEmpty';
 
 const FILTER: TaskFilter = { view: 'today' };
 
@@ -94,9 +95,11 @@ export default function TodayPage() {
         </IonRefresher>
 
         {tasks.length === 0 ? (
-          <div className="center-empty">
-            <p>{tr('todo.emptyToday')}</p>
-          </div>
+          <ModuleEmpty
+            emoji="✅"
+            title={tr('todo.emptyToday.title')}
+            body={tr('todo.emptyToday.body')}
+          />
         ) : (
           <IonList lines="none">
             {tasks.map((t) => (

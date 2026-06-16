@@ -33,6 +33,7 @@ import { useT } from '@/i18n/useT';
 import { useSettingsStore } from '@/store/settings.store';
 import { Preferences } from '@capacitor/preferences';
 import { useIonToast } from '@ionic/react';
+import ModuleEmpty from '@/lib/ModuleEmpty';
 
 export default function DashboardPage() {
   const accounts = useFinanceStore((s) => s.accounts);
@@ -207,9 +208,11 @@ export default function DashboardPage() {
         </div>
 
         {recent.length === 0 ? (
-          <div className="center-empty">
-            <p>{tr('dashboard.empty')}</p>
-          </div>
+          <ModuleEmpty
+            emoji="💸"
+            title={tr('dashboard.empty.title')}
+            body={tr('dashboard.empty.body')}
+          />
         ) : (
           <IonList lines="none">
             {recent.map((t) => {

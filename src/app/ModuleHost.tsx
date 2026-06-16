@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo } from 'react';
+import { Suspense, lazy, useEffect, useMemo } from 'react';
 import {
   IonContent,
   IonPage,
@@ -18,6 +18,22 @@ export default function ModuleHost() {
   const history = useHistory();
   const t = useT();
   const mod = getModule(moduleId);
+
+  // Tandai modul aktif di <html> untuk CSS theming per-modul.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (mod) {
+      root.setAttribute('data-module', mod.id);
+      root.style.setProperty('--module-accent', mod.color);
+    } else {
+      root.removeAttribute('data-module');
+      root.style.removeProperty('--module-accent');
+    }
+    return () => {
+      root.removeAttribute('data-module');
+      root.style.removeProperty('--module-accent');
+    };
+  }, [mod]);
 
   const LazyModule = useMemo(
     () => (mod ? lazy(mod.component) : null),

@@ -31,6 +31,7 @@ import HabitForm from '../components/HabitForm';
 import Heatmap from '../components/Heatmap';
 import { MILESTONES, MILESTONE_META, unlockedFor } from '../lib/achievements';
 import { HABIT_BUNDLES, templateToNewHabit } from '@/features/templates/habits';
+import ModuleEmpty from '@/lib/ModuleEmpty';
 import type { Habit, HabitLog, HabitStats } from '../data/models';
 import type { TranslationKey } from '@/i18n';
 
@@ -239,9 +240,11 @@ export default function AllHabitsPage() {
       </IonHeader>
       <IonContent>
         {habits.length === 0 ? (
-          <div className="center-empty">
-            <p>{tr('habit.emptyAll')}</p>
-          </div>
+          <ModuleEmpty
+            emoji="🌱"
+            title={tr('habit.emptyAll.title')}
+            body={tr('habit.emptyAll.body')}
+          />
         ) : (
           <IonList lines="none">
             {habits.map((h) => (

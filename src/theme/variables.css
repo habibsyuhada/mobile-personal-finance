@@ -360,3 +360,78 @@ ion-progress-bar {
   font-size: 16px;
 }
 
+/* ============================================================
+   Per-module theming — saat user masuk modul, body[data-module]
+   memberi nuansa modul tsb: gradient header, tab indicator, dan
+   empty state ilustratif. --module-accent di-set via JS di
+   ModuleHost.tsx berdasarkan ModuleDescriptor.color.
+   ============================================================ */
+html[data-module] {
+  --module-accent-rgb: 99, 102, 241;
+}
+html[data-module='finance'] {
+  --module-accent-rgb: 99, 102, 241;
+}
+html[data-module='habit'] {
+  --module-accent-rgb: 245, 158, 11;
+}
+html[data-module='todo'] {
+  --module-accent-rgb: 14, 165, 233;
+}
+
+/* Toolbar di dalam modul: gradient samar dengan accent modul */
+html[data-module] ion-toolbar {
+  --background: linear-gradient(
+    180deg,
+    rgba(var(--module-accent-rgb), 0.12) 0%,
+    rgba(var(--module-accent-rgb), 0) 100%
+  );
+  --color: var(--ion-text-color);
+}
+
+/* FAB shadow memakai accent modul */
+html[data-module] ion-fab-button {
+  --background: rgb(var(--module-accent-rgb));
+  --color: #fff;
+  --box-shadow: 0 8px 20px rgba(var(--module-accent-rgb), 0.45);
+}
+
+/* Tab bar (jika ada) ikut accent */
+html[data-module] ion-tab-button {
+  --color-selected: rgb(var(--module-accent-rgb));
+}
+
+/* Empty state ilustratif */
+.module-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 28px;
+  text-align: center;
+  color: var(--ion-color-medium);
+}
+.module-empty .emoji {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 12px rgba(var(--module-accent-rgb), 0.35));
+  animation: module-empty-bob 3s ease-in-out infinite;
+}
+.module-empty h2 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--ion-text-color);
+}
+.module-empty p {
+  margin: 0;
+  font-size: 13px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+@keyframes module-empty-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+

@@ -25,6 +25,7 @@ import { haptics } from '@/lib/haptics';
 import { checkAchievements } from '../lib/achievements';
 import { currentStreak } from '../lib/schedule';
 import { useCelebration } from '@/store/celebration.store';
+import ModuleEmpty from '@/lib/ModuleEmpty';
 import type { Habit } from '../data/models';
 
 export default function TodayHabitsPage() {
@@ -133,9 +134,11 @@ export default function TodayHabitsPage() {
         </IonRefresher>
 
         {today.length === 0 ? (
-          <div className="center-empty">
-            <p>{tr('habit.emptyToday')}</p>
-          </div>
+          <ModuleEmpty
+            emoji="🌱"
+            title={tr('habit.emptyToday.title')}
+            body={tr('habit.emptyToday.body')}
+          />
         ) : (
           <IonList lines="none">
             {today.map((p) => (
