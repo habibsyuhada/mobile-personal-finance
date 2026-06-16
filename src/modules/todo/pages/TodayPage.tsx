@@ -26,6 +26,7 @@ import { useT } from '@/i18n/useT';
 import { haptics } from '@/lib/haptics';
 import { useCelebration } from '@/store/celebration.store';
 import ModuleEmpty from '@/lib/ModuleEmpty';
+import { startLiveActivity, stopLiveActivity } from '@/platform/liveActivity';
 
 const FILTER: TaskFilter = { view: 'today' };
 
@@ -61,6 +62,25 @@ export default function TodayPage() {
     refreshLists();
     loadTasks(FILTER);
   }, [refreshLists, loadTasks]);
+
+  // Live activity: persistent notification untuk task today progress.
+  useEffect(() => {
+    const done = tasks.filter((t) => t.completed).length;
+    const total = tasks.length;
+    if (total === 0) {
+      void stopLiveActivity();
+      return;
+    }
+    void startLiveActivity({
+      title: tr('todo.today'),
+      body: `${total - done} remaining`,
+      progress: done,
+      total,
+    });
+    return () => {
+      void stopLiveActivity();
+    };
+  }, [tasks, tr]);
 
   const confirmDelete = (t: Task) => {
     presentAlert({

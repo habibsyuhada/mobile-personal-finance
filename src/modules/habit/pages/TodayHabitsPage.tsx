@@ -26,6 +26,7 @@ import { checkAchievements } from '../lib/achievements';
 import { currentStreak } from '../lib/schedule';
 import { useCelebration } from '@/store/celebration.store';
 import ModuleEmpty from '@/lib/ModuleEmpty';
+import { startLiveActivity, stopLiveActivity } from '@/platform/liveActivity';
 import type { Habit } from '../data/models';
 
 export default function TodayHabitsPage() {
@@ -48,6 +49,26 @@ export default function TodayHabitsPage() {
     refreshHabits();
     refreshToday();
   }, [refreshHabits, refreshToday]);
+
+  // Live activity: mulai saat masuk Today, update saat progress berubah,
+  // stop saat unmount.
+  useEffect(() => {
+    const done = today.filter((p) => p.done).length;
+    const total = today.length;
+    if (total === 0) {
+      void stopLiveActivity();
+      return;
+    }
+    void startLiveActivity({
+      title: tr('habit.today'),
+      body: `${done}/${total} done`,
+      progress: done,
+      total,
+    });
+    return () => {
+      void stopLiveActivity();
+    };
+  }, [today, tr]);
 
   // Hitung streak per habit saat daftar berubah.
   useEffect(() => {
