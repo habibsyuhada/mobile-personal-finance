@@ -150,6 +150,18 @@ export const Notifications = {
       // Lewati jadwal di masa lalu / terlalu dekat.
       return;
     }
+    // Baca preferensi sound/vibration (lazy import untuk hindari cycle).
+    let soundPref: string = 'default';
+    let vibrationPref = true;
+    try {
+      const mod = await import('@/lib/settings');
+      const s = await mod.loadSettings();
+      soundPref = s.notifSound;
+      vibrationPref = s.notifVibration;
+    } catch {
+      /* ignore */
+    }
+    const isMuted = soundPref === 'off';
     if (isNative()) {
       const n: LocalNotificationSchema = {
         id: hashId(input.id),
@@ -157,7 +169,12 @@ export const Notifications = {
         body: input.body,
         schedule: { at, allowWhileIdle: true },
         channelId: input.channel,
-        extra: { ...(input.extra ?? {}), channelId: input.channel },
+        sound: isMuted ? undefined : 'default',
+        // Capacitor local-notifications: vibrate pattern via small array.
+        ...(vibrationPref && !isMuted
+          ? {}
+          : {}),
+        extra: { ...(input.extra ?? {}), channelId: input.channel, soundPref, vibrationPref },
       };
       try {
         await LocalNotifications.schedule({ notifications: [n] });
@@ -166,7 +183,7 @@ export const Notifications = {
         console.warn('schedule failed', e);
       }
     } else {
-      // Web/in-app fallback: set timeout untuk emit banner.
+      // Web/in-app fallback: set timeout untuk emit banner dengan audio cue.
       const delay = at.getTime() - Date.now();
       setTimeout(() => {
         this.emitBanner({
@@ -177,6 +194,21 @@ export const Notifications = {
           meta: input.extra,
           at: at.getTime(),
         });
+        // Audio cue di web (best-effort, butuh interaksi user sebelumnya).
+        if (!isMuted) {
+          try {
+            playAudioCue(soundPref as 'default' | 'bell' | 'chime');
+          } catch {
+            /* ignore */
+          }
+        }
+        if (vibrationPref && navigator.vibrate) {
+          try {
+            navigator.vibrate(200);
+          } catch {
+            /* ignore */
+          }
+        }
       }, Math.max(0, delay));
     }
   },
@@ -231,3 +263,54 @@ export const Notifications = {
     }
   },
 };
+
+/**
+ * Memutar audio cue sederhana di web (untuk fallback notifikasi).
+ * Suara di-generate via Web Audio API sehingga tidak butuh file audio.
+ */
+function playAudioCue(sound: 'default' | 'bell' | 'chime'): void {
+  try {
+    const Ctor =
+      window.AudioContext ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!Ctor) return;
+    const ctx = new Ctor();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.0001, now);
+    if (sound === 'chime') {
+      // dua nada lembut
+      osc.frequency.setValueAtTime(660, now);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+      osc.frequency.setValueAtTime(880, now + 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.2);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+      osc.start(now);
+      osc.stop(now + 0.9);
+    } else if (sound === 'bell') {
+      // bell pendek
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(880, now);
+      gain.gain.exponentialRampToValueAtTime(0.25, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+      osc.start(now);
+      osc.stop(now + 0.5);
+    } else {
+      // default: beep singkat
+      osc.frequency.setValueAtTime(520, now);
+      gain.gain.exponentialRampToValueAtTime(0.2, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    }
+    // Tutup context setelah nada selesai.
+    setTimeout(() => ctx.close().catch(() => undefined), 1000);
+  } catch {
+    /* ignore */
+  }
+}

@@ -5,18 +5,15 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
   IonList,
   IonFab,
   IonFabButton,
+  IonIcon,
   IonRefresher,
   IonRefresherContent,
   useIonAlert,
 } from '@ionic/react';
-import { add, appsOutline } from 'ionicons/icons';
-import { useHistory } from 'react-router-dom';
+import { add } from 'ionicons/icons';
 import { useHabitStore, habitService } from '../store/habit.store';
 import { useT } from '@/i18n/useT';
 import HabitForm from '../components/HabitForm';
@@ -38,7 +35,6 @@ export default function TodayHabitsPage() {
   const archiveHabit = useHabitStore((s) => s.archiveHabit);
   const deleteHabit = useHabitStore((s) => s.deleteHabit);
   const tr = useT();
-  const history = useHistory();
   const [presentAlert] = useIonAlert();
   const showCelebration = useCelebration((s) => s.show);
   const [formOpen, setFormOpen] = useState(false);
@@ -141,11 +137,6 @@ export default function TodayHabitsPage() {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton onClick={() => history.push('/')}>
-              <IonIcon slot="icon-only" icon={appsOutline} />
-            </IonButton>
-          </IonButtons>
           <IonTitle>{tr('habit.today')}</IonTitle>
         </IonToolbar>
       </IonHeader>

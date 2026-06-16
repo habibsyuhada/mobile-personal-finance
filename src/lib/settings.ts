@@ -22,6 +22,8 @@ const KEYS = {
   notifFinanceEnabled: 'pref.notif.finance.enabled',
   notifFinanceNoonEnabled: 'pref.notif.finance.noon.enabled',
   notifFinanceTime: 'pref.notif.finance.time', // 'HH:mm'
+  notifSound: 'pref.notif.sound', // 'default' | 'bell' | 'chime' | 'off'
+  notifVibration: 'pref.notif.vibration', // 'true' | 'false'
   themePreset: 'pref.theme.preset', // 'indigo' | 'sunset' | 'forest' | 'mono'
   themeAccent: 'pref.theme.accent', // hex string override preset
   trueBlack: 'pref.theme.trueBlack', // 'true' | 'false' (AMOLED-friendly)
@@ -29,6 +31,14 @@ const KEYS = {
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type ThemePreset = 'indigo' | 'sunset' | 'forest' | 'mono';
+export type NotifSound = 'default' | 'bell' | 'chime' | 'off';
+
+export const NOTIF_SOUND_OPTIONS: Array<{ value: NotifSound; labelKey: string }> = [
+  { value: 'default', labelKey: 'settings.sound.default' },
+  { value: 'bell', labelKey: 'settings.sound.bell' },
+  { value: 'chime', labelKey: 'settings.sound.chime' },
+  { value: 'off', labelKey: 'settings.sound.off' },
+];
 
 export interface AppSettings {
   theme: ThemeMode;
@@ -45,6 +55,8 @@ export interface AppSettings {
   notifFinanceEnabled: boolean;
   notifFinanceNoonEnabled: boolean;
   notifFinanceTime: string; // 'HH:mm'
+  notifSound: NotifSound;
+  notifVibration: boolean;
   themePreset: ThemePreset;
   themeAccent: string; // hex color, e.g. '#6366f1'
   trueBlack: boolean;
@@ -65,6 +77,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   notifFinanceEnabled: true,
   notifFinanceNoonEnabled: false,
   notifFinanceTime: '20:00',
+  notifSound: 'default',
+  notifVibration: true,
   themePreset: 'indigo',
   themeAccent: '#6366f1',
   trueBlack: false,
@@ -91,6 +105,8 @@ export async function loadSettings(): Promise<AppSettings> {
     notifFinanceEnabled,
     notifFinanceNoonEnabled,
     notifFinanceTime,
+    notifSound,
+    notifVibration,
     themePreset,
     themeAccent,
     trueBlack,
@@ -109,6 +125,8 @@ export async function loadSettings(): Promise<AppSettings> {
     get(KEYS.notifFinanceEnabled, 'true'),
     get(KEYS.notifFinanceNoonEnabled, 'false'),
     get(KEYS.notifFinanceTime, DEFAULT_SETTINGS.notifFinanceTime),
+    get(KEYS.notifSound, DEFAULT_SETTINGS.notifSound),
+    get(KEYS.notifVibration, 'true'),
     get(KEYS.themePreset, DEFAULT_SETTINGS.themePreset),
     get(KEYS.themeAccent, DEFAULT_SETTINGS.themeAccent),
     get(KEYS.trueBlack, 'false'),
@@ -128,6 +146,8 @@ export async function loadSettings(): Promise<AppSettings> {
     notifFinanceEnabled: notifFinanceEnabled !== 'false',
     notifFinanceNoonEnabled: notifFinanceNoonEnabled === 'true',
     notifFinanceTime,
+    notifSound: (notifSound as NotifSound) || 'default',
+    notifVibration: notifVibration !== 'false',
     themePreset: (themePreset as ThemePreset) || 'indigo',
     themeAccent: themeAccent || '#6366f1',
     trueBlack: trueBlack === 'true',
@@ -153,6 +173,8 @@ export async function saveSetting<K extends keyof AppSettings>(
     notifFinanceEnabled: KEYS.notifFinanceEnabled,
     notifFinanceNoonEnabled: KEYS.notifFinanceNoonEnabled,
     notifFinanceTime: KEYS.notifFinanceTime,
+    notifSound: KEYS.notifSound,
+    notifVibration: KEYS.notifVibration,
     themePreset: KEYS.themePreset,
     themeAccent: KEYS.themeAccent,
     trueBlack: KEYS.trueBlack,

@@ -5,20 +5,23 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButtons,
-  IonButton,
-  IonCard,
-  IonCardContent,
   IonList,
   IonItem,
   IonLabel,
   IonIcon,
+  IonButton,
   IonRefresher,
   IonRefresherContent,
   IonSegment,
   IonSegmentButton,
 } from '@ionic/react';
-import { arrowDownOutline, arrowUpOutline, appsOutline, alertCircleOutline, refreshOutline } from 'ionicons/icons';
+import {
+  arrowDownOutline,
+  arrowUpOutline,
+  alertCircleOutline,
+  refreshOutline,
+  add,
+} from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { iconForCategory, colorForCategory, transferIcon } from '@/lib/categoryIcons';
 import { RollingNumber } from '@/lib/RollingNumber';
@@ -33,7 +36,6 @@ import { useT } from '@/i18n/useT';
 import { useSettingsStore } from '@/store/settings.store';
 import { Preferences } from '@capacitor/preferences';
 import { useIonToast } from '@ionic/react';
-import ModuleEmpty from '@/lib/ModuleEmpty';
 
 export default function DashboardPage() {
   const accounts = useFinanceStore((s) => s.accounts);
@@ -107,11 +109,6 @@ export default function DashboardPage() {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton onClick={() => history.push('/')}>
-              <IonIcon slot="icon-only" icon={appsOutline} />
-            </IonButton>
-          </IonButtons>
           <IonTitle>{tr('dashboard.title')}</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -121,16 +118,12 @@ export default function DashboardPage() {
         </IonRefresher>
 
         <div className="net-worth-card">
-          <div style={{ padding: '22px 24px', position: 'relative', zIndex: 1 }}>
-            <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 500 }}>
-              {tr('dashboard.netWorth')}
-            </div>
-            <div style={{ color: '#fff', fontSize: 32, fontWeight: 800, marginTop: 4, letterSpacing: '-0.5px' }}>
+          <div className="nw-content">
+            <div className="nw-label">{tr('dashboard.netWorth')}</div>
+            <div className="nw-value">
               <RollingNumber value={netWorth} format={(n) => fmt(n)} />
             </div>
-            <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: 8 }}>
-              {tr('dashboard.accounts', { count: accounts.length })}
-            </div>
+            <div className="nw-meta">{tr('dashboard.accounts', { count: accounts.length })}</div>
           </div>
         </div>
 
@@ -174,45 +167,64 @@ export default function DashboardPage() {
           </IonSegment>
         </div>
 
-        <div className="summary-grid" style={{ padding: 16 }}>
+        <div style={{ padding: '0 16px 12px' }}>
           <InsightCards insights={insights} loading={insightsLoading} />
-          <IonCard className="summary-card">
-            <IonCardContent>
-              <div className="summary-icon income">
-                <IonIcon icon={arrowDownOutline} style={{ color: 'var(--app-income)', fontSize: 20 }} />
-              </div>
-              <div className="summary-label">{tr('dashboard.income')}</div>
-              <div className="summary-value amount-income">
-                <RollingNumber value={totals.income} format={(n) => fmt(n)} />
-              </div>
-            </IonCardContent>
-          </IonCard>
-          <IonCard className="summary-card">
-            <IonCardContent>
-              <div className="summary-icon expense">
-                <IonIcon icon={arrowUpOutline} style={{ color: 'var(--app-expense)', fontSize: 20 }} />
-              </div>
-              <div className="summary-label">{tr('dashboard.expense')}</div>
-              <div className="summary-value amount-expense">
-                <RollingNumber value={totals.expense} format={(n) => fmt(n)} />
-              </div>
-            </IonCardContent>
-          </IonCard>
+        </div>
+
+        {/* Baris Pemasukan + Pengeluaran satu baris, full-width. */}
+        <div className="summary-row" role="group" aria-label={tr('dashboard.title')}>
+          <button
+            type="button"
+            className="summary-cell income"
+            onClick={() => history.push('/m/finance/transactions')}
+          >
+            <span className="summary-icon income">
+              <IonIcon icon={arrowDownOutline} style={{ color: 'var(--app-income)', fontSize: 20 }} />
+            </span>
+            <span className="summary-label">{tr('dashboard.income')}</span>
+            <span className="summary-value amount-income">
+              <RollingNumber value={totals.income} format={(n) => fmt(n)} />
+            </span>
+          </button>
+          <span className="summary-divider" aria-hidden="true" />
+          <button
+            type="button"
+            className="summary-cell expense"
+            onClick={() => history.push('/m/finance/transactions')}
+          >
+            <span className="summary-icon expense">
+              <IonIcon icon={arrowUpOutline} style={{ color: 'var(--app-expense)', fontSize: 20 }} />
+            </span>
+            <span className="summary-label">{tr('dashboard.expense')}</span>
+            <span className="summary-value amount-expense">
+              <RollingNumber value={totals.expense} format={(n) => fmt(n)} />
+            </span>
+          </button>
         </div>
 
         <div className="section-head">
           <h3>{tr('dashboard.recent')}</h3>
-          <IonButton fill="clear" size="small" routerLink="/m/finance/transactions">
-            {tr('common.viewAll')}
-          </IonButton>
+          {recent.length > 0 && (
+            <IonButton fill="clear" size="small" routerLink="/m/finance/transactions">
+              {tr('common.viewAll')}
+            </IonButton>
+          )}
         </div>
 
         {recent.length === 0 ? (
-          <ModuleEmpty
-            emoji="💸"
-            title={tr('dashboard.empty.title')}
-            body={tr('dashboard.empty.body')}
-          />
+          <div className="empty-tx-card" role="status">
+            <div className="empty-tx-emoji" aria-hidden="true">💸</div>
+            <div className="empty-tx-body">
+              <h2>{tr('dashboard.empty.title')}</h2>
+              <p>{tr('dashboard.empty.body')}</p>
+            </div>
+            <div className="empty-tx-actions">
+              <IonButton size="default" routerLink="/m/finance/transactions">
+                <IonIcon slot="start" icon={add} />
+                {tr('txform.newTitle')}
+              </IonButton>
+            </div>
+          </div>
         ) : (
           <IonList lines="none">
             {recent.map((t) => {

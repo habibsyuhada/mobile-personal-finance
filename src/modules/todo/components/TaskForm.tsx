@@ -49,6 +49,8 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
   const [dueAt, setDueAt] = useState<string | null>(null);
   const [starred, setStarred] = useState(false);
   const [recur, setRecur] = useState<RecurFreq | 'none'>('none');
+  const [alarmEnabled, setAlarmEnabled] = useState(false);
+  const [alarmTime, setAlarmTime] = useState<string>('09:00');
   const [error, setError] = useState<string | null>(null);
   const [templateOpen, setTemplateOpen] = useState(false);
 
@@ -62,6 +64,8 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
       setDueAt(editing.dueAt ?? null);
       setStarred(editing.starred);
       setRecur(editing.recurFreq ?? 'none');
+      setAlarmEnabled(!!editing.alarmTime);
+      setAlarmTime(editing.alarmTime ?? '09:00');
     } else {
       setTitle('');
       setNote('');
@@ -70,6 +74,8 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
       setDueAt(null);
       setStarred(false);
       setRecur('none');
+      setAlarmEnabled(false);
+      setAlarmTime('09:00');
     }
     setError(null);
   }, [isOpen, editing, defaultListId, lists]);
@@ -101,6 +107,7 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
       starred,
       recurFreq: recur === 'none' ? null : recur,
       recurInterval: recur === 'none' ? null : 1,
+      alarmTime: alarmEnabled ? alarmTime : null,
     };
     try {
       if (editing) {
@@ -166,6 +173,34 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
             onIonChange={(e) => setDueAt(e.detail.value ? String(e.detail.value) : null)}
           />
         </IonItem>
+        <IonItem>
+          <IonLabel>{tr('todo.alarm')}</IonLabel>
+          <IonToggle
+            checked={alarmEnabled}
+            onIonChange={(e) => setAlarmEnabled(e.detail.checked)}
+            slot="end"
+          />
+        </IonItem>
+        {alarmEnabled && (
+          <IonItem>
+            <IonLabel position="stacked">{tr('todo.alarmTime')}</IonLabel>
+            <IonDatetime
+              presentation="time"
+              value={alarmTime}
+              minuteValues="0,5,10,15,20,25,30,35,40,45,50,55"
+              onIonChange={(e) => {
+                const v = e.detail.value;
+                if (typeof v === 'string') {
+                  // IonDatetime time presentation returns ISO datetime;
+                  // ekstrak HH:mm dari value tsb.
+                  const m = /T(\d{2}:\d{2})/.exec(v);
+                  if (m) setAlarmTime(m[1]);
+                  else setAlarmTime(v);
+                }
+              }}
+            />
+          </IonItem>
+        )}
         <IonItem>
           <IonLabel position="stacked">{tr('todo.repeat')}</IonLabel>
           <IonSelect value={recur} onIonChange={(e) => setRecur(e.detail.value)}>

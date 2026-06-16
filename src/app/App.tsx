@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IonApp, IonRouterOutlet, IonSpinner, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 import { initDatabase, getDatabase } from '@/data/db/database';
 import { runModuleMigrations, runModuleInit } from '@/platform/migrations';
 import { Notifications } from '@/platform/notifications';
@@ -17,6 +17,13 @@ import { computeWidgetSnapshot, pushWidgetSnapshot } from '@/platform/widgetSnap
 import Launcher from './Launcher';
 import ModuleHost from './ModuleHost';
 import GlobalSettings from './GlobalSettings';
+import {
+  GeneralSettingsPage,
+  FinanceSettingsPage,
+  TodoSettingsPage,
+  HabitSettingsPage,
+  DataSettingsPage,
+} from './SettingsPages';
 import Onboarding from './Onboarding';
 import { BannerHost } from './BannerHost';
 import { Celebration } from './Celebration';
@@ -111,8 +118,10 @@ export default function App() {
   }, []);
 
   // Widget snapshot: subscribe ke 3 store utama, push ke native bila berubah.
-  // (No-op di platform non-Android.)
+  // (No-op di platform non-Android.) Diletakkan di sini (di luar IonReactRouter)
+  // karena tidak butuh akses ke router.
   useEffect(() => {
+    if (!ready) return;
     let pending: ReturnType<typeof setTimeout> | null = null;
     const schedule = () => {
       if (pending) return;
@@ -169,15 +178,38 @@ export default function App() {
           <Route exact path="/onboarding" render={() => <Onboarding />} />
           <Route exact path="/" render={() => <LauncherOrOnboarding />} />
           <Route exact path="/settings" render={() => <GlobalSettings />} />
+          <Route exact path="/settings/general" render={() => <GeneralSettingsPage />} />
+          <Route exact path="/settings/finance" render={() => <FinanceSettingsPage />} />
+          <Route exact path="/settings/todo" render={() => <TodoSettingsPage />} />
+          <Route exact path="/settings/habit" render={() => <HabitSettingsPage />} />
+          <Route exact path="/settings/data" render={() => <DataSettingsPage />} />
           <Route path="/m/:moduleId" render={() => <ModuleHost />} />
           {/* Kompatibilitas rute lama */}
           <Route exact path="/tabs" render={() => <Redirect to="/m/finance/dashboard" />} />
         </IonRouterOutlet>
+        <ShellChrome />
       </IonReactRouter>
       <BannerHost />
       <CelebrationOverlay />
     </IonApp>
   );
+}
+
+/**
+ * Komponen anak yang hidup di dalam <IonReactRouter>. Tugasnya: toggle
+ * kelas global pada <html> sesuai pathname untuk styling shell. Bottom-nav
+ * sekarang di-render oleh masing-masing modul, bukan global.
+ */
+function ShellChrome() {
+  const location = useLocation();
+  useEffect(() => {
+    const root = document.documentElement;
+    const inModule = /^\/m\//.test(location.pathname);
+    if (inModule) root.classList.add('has-bottomnav');
+    else root.classList.remove('has-bottomnav');
+  }, [location.pathname]);
+
+  return null;
 }
 
 function LauncherOrOnboarding() {

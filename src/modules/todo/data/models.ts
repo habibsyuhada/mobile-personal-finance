@@ -40,6 +40,8 @@ export interface Task {
   sortOrder: number;
   recurFreq?: RecurFreq | null;
   recurInterval?: number | null;
+  /** 'HH:mm' — waktu alarm harian absolut. NULL berarti tidak ada alarm. */
+  alarmTime?: string | null;
   createdAt: string;
   updatedAt: string;
   subtasks?: Subtask[];

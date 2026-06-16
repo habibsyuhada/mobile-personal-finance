@@ -5,19 +5,16 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
   IonList,
   IonFab,
   IonFabButton,
+  IonIcon,
   IonRefresher,
   IonRefresherContent,
   useIonAlert,
   useIonToast,
 } from '@ionic/react';
-import { add, appsOutline, calendarOutline } from 'ionicons/icons';
-import { useHistory } from 'react-router-dom';
+import { add, calendarOutline } from 'ionicons/icons';
 import { useTodoStore, todoService } from '../store/todo.store';
 import type { Task, TaskFilter } from '../data/models';
 import TaskItem from '../components/TaskItem';
@@ -37,7 +34,6 @@ export default function TodayPage() {
   const toggle = useTodoStore((s) => s.toggle);
   const deleteTask = useTodoStore((s) => s.deleteTask);
   const tr = useT();
-  const history = useHistory();
   const [presentAlert] = useIonAlert();
   const [presentToast] = useIonToast();
   const showCelebration = useCelebration((s) => s.show);
@@ -101,11 +97,6 @@ export default function TodayPage() {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton onClick={() => history.push('/')}>
-              <IonIcon slot="icon-only" icon={appsOutline} />
-            </IonButton>
-          </IonButtons>
           <IonTitle>{tr('todo.today')}</IonTitle>
         </IonToolbar>
       </IonHeader>

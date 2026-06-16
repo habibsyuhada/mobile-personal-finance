@@ -54,4 +54,13 @@ export const TODO_MIGRATIONS: ModuleMigration[] = [
       );`,
     ],
   },
+  {
+    version: 2,
+    statements: [
+      // Alarm time per task: 'HH:mm' (waktu absolut harian, independent dari
+      // due date). NULL = tidak ada alarm. Alarm di-schedule oleh
+      // TodoService.scheduleReminder() dan diulang setiap hari pada jam tsb.
+      `ALTER TABLE todo_tasks ADD COLUMN alarm_time TEXT;`,
+    ],
+  },
 ];

@@ -1,6 +1,5 @@
 /* ============================================================
-   Tema kustom aplikasi — modern, lembut, dengan dark mode.
-   Dark mode di-toggle via kelas .ion-palette-dark pada <html>.
+   Moraven — design tokens & global styles
    ============================================================ */
 
 :root {
@@ -28,37 +27,81 @@
   --app-expense: #ef4444;
   --app-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
   --app-gradient-success: linear-gradient(135deg, #10b981 0%, #16a34a 100%);
+  --app-gradient-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --app-gradient-danger: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  --app-gradient-sky: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
 
   /* Surfaces (light) */
-  --ion-background-color: #f4f5fb;
-  --ion-background-color-rgb: 244, 245, 251;
+  --ion-background-color: #f5f6fb;
+  --ion-background-color-rgb: 245, 246, 251;
   --ion-text-color: #1e2235;
   --ion-text-color-rgb: 30, 34, 53;
   --ion-toolbar-background: #ffffff;
   --ion-item-background: #ffffff;
   --ion-card-background: #ffffff;
 
-  --app-card-radius: 20px;
-  --app-shadow: 0 6px 24px rgba(30, 34, 53, 0.08);
-  --app-shadow-soft: 0 2px 10px rgba(30, 34, 53, 0.05);
+  /* Shape & elevation */
+  --app-card-radius: 22px;
+  --app-card-radius-sm: 14px;
+  --app-card-radius-lg: 28px;
+  --app-shadow: 0 10px 32px rgba(30, 34, 53, 0.08), 0 2px 6px rgba(30, 34, 53, 0.04);
+  --app-shadow-soft: 0 4px 14px rgba(30, 34, 53, 0.06);
+  --app-shadow-strong: 0 18px 50px rgba(30, 34, 53, 0.14), 0 4px 12px rgba(30, 34, 53, 0.08);
+  --app-shadow-glow: 0 14px 36px rgba(99, 102, 241, 0.32);
 
-  --ion-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  /* Spacing & motion */
+  --app-page-pad: 16px;
+  --app-section-gap: 20px;
+  --app-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --app-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --app-dur-fast: 180ms;
+  --app-dur: 280ms;
+  --app-dur-slow: 420ms;
+
+  /* Typography */
+  --ion-font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
+  --app-font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  /* Bottom nav (used by all shells) */
+  --app-bottomnav-h: 64px;
 }
 
-/* Dark palette */
+/* Smooth global motion */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--ion-font-family);
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   Dark palette
+   ============================================================ */
 .ion-palette-dark {
-  --ion-background-color: #0f1117;
-  --ion-background-color-rgb: 15, 17, 23;
+  --ion-background-color: #0b0d14;
+  --ion-background-color-rgb: 11, 13, 20;
   --ion-text-color: #e7e9f3;
   --ion-text-color-rgb: 231, 233, 243;
-  --ion-toolbar-background: #171a23;
-  --ion-item-background: #171a23;
-  --ion-card-background: #171a23;
+  --ion-toolbar-background: #11141d;
+  --ion-item-background: #11141d;
+  --ion-card-background: #11141d;
   --ion-color-step-50: #1c1f2a;
   --ion-color-step-100: #232735;
-  --app-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-  --app-shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --ion-color-medium: #8a90a3;
+  --app-shadow: 0 10px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --app-shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.3);
+  --app-shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35);
+  --app-shadow-glow: 0 14px 36px rgba(99, 102, 241, 0.5);
 }
 
 /* True black (AMOLED-friendly) */
@@ -67,9 +110,13 @@
   --ion-toolbar-background: #050505;
   --ion-item-background: #050505;
   --ion-card-background: #050505;
+  --ion-color-step-50: #0a0a0a;
+  --ion-color-step-100: #141414;
 }
 
-/* ---------- Toolbar / header ---------- */
+/* ============================================================
+   Toolbar / header
+   ============================================================ */
 ion-toolbar {
   --border-width: 0 !important;
   --border-color: transparent;
@@ -79,17 +126,36 @@ ion-header.header-md::after {
 }
 ion-title {
   font-weight: 700;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
+  font-family: var(--app-font-display);
+}
+ion-toolbar ion-button[slot='start'],
+ion-toolbar ion-button[slot='end'] {
+  --color: var(--ion-text-color);
 }
 
-/* ---------- Cards ---------- */
+/* ============================================================
+   Cards
+   ============================================================ */
 ion-card {
   border-radius: var(--app-card-radius);
   box-shadow: var(--app-shadow-soft);
   margin: 12px 16px;
+  background: var(--ion-card-background);
+  transition: transform var(--app-dur) var(--app-ease),
+    box-shadow var(--app-dur) var(--app-ease);
+}
+ion-card.elevated {
+  box-shadow: var(--app-shadow);
+}
+ion-card.elevated:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--app-shadow-strong);
 }
 
-/* ---------- Amount colors ---------- */
+/* ============================================================
+   Amount colors
+   ============================================================ */
 .amount-income {
   color: var(--app-income);
   font-weight: 700;
@@ -99,37 +165,68 @@ ion-card {
   font-weight: 700;
 }
 
-/* ---------- Hero net-worth card ---------- */
+/* ============================================================
+   Hero net-worth card (finance dashboard)
+   ============================================================ */
 .net-worth-card {
   margin: 16px;
-  border-radius: 24px;
+  border-radius: var(--app-card-radius-lg);
   background: var(--app-gradient);
-  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+  box-shadow: var(--app-shadow-glow);
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 .net-worth-card::after {
   content: '';
   position: absolute;
-  top: -40px;
+  top: -50px;
   right: -30px;
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
   background: rgba(255, 255, 255, 0.12);
   border-radius: 50%;
+  filter: blur(8px);
 }
 .net-worth-card::before {
   content: '';
   position: absolute;
-  bottom: -50px;
+  bottom: -60px;
   left: -20px;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 50%;
+  filter: blur(6px);
+}
+.net-worth-card .nw-content {
+  position: relative;
+  z-index: 1;
+  padding: 24px 24px 26px;
+  color: #fff;
+}
+.net-worth-card .nw-label {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+.net-worth-card .nw-value {
+  font-size: 34px;
+  font-weight: 800;
+  margin-top: 4px;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+}
+.net-worth-card .nw-meta {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  margin-top: 10px;
 }
 
-/* ---------- Summary grid ---------- */
+/* ============================================================
+   Summary grid (dashboard cards) + summary row (full-width 1 baris)
+   ============================================================ */
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -137,7 +234,9 @@ ion-card {
 }
 .summary-card {
   margin: 0 !important;
-  border-radius: 18px;
+  border-radius: var(--app-card-radius-sm);
+  border: 1px solid rgba(var(--ion-text-color-rgb), 0.06);
+  background: var(--ion-card-background);
 }
 .summary-icon {
   width: 40px;
@@ -158,13 +257,104 @@ ion-card {
   font-size: 12px;
   color: var(--ion-color-medium);
   margin-bottom: 2px;
+  font-weight: 500;
 }
 .summary-value {
   font-size: 18px;
   font-weight: 700;
+  letter-spacing: -0.3px;
 }
 
-/* ---------- Category avatar ---------- */
+/* Summary row: Pemasukan | Pengeluaran dalam satu kartu horizontal. */
+.summary-row {
+  display: flex;
+  align-items: stretch;
+  margin: 0 16px 12px;
+  padding: 16px 12px;
+  border-radius: var(--app-card-radius);
+  background: var(--ion-card-background);
+  box-shadow: var(--app-shadow-soft);
+  border: 1px solid rgba(var(--ion-text-color-rgb), 0.05);
+}
+.summary-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background var(--app-dur-fast) var(--app-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.summary-cell:hover {
+  background: rgba(var(--ion-text-color-rgb), 0.04);
+}
+.summary-cell .summary-icon {
+  margin-bottom: 4px;
+}
+.summary-cell .summary-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 0;
+}
+.summary-cell .summary-value {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+.summary-divider {
+  width: 1px;
+  align-self: stretch;
+  background: rgba(var(--ion-text-color-rgb), 0.08);
+  margin: 4px 4px;
+}
+
+/* Empty state card (full width) — untuk "Belum ada transaksi". */
+.empty-tx-card {
+  margin: 0 16px;
+  padding: 22px 20px 18px;
+  border-radius: var(--app-card-radius);
+  background: var(--ion-card-background);
+  box-shadow: var(--app-shadow-soft);
+  border: 1px dashed rgba(var(--ion-text-color-rgb), 0.16);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  text-align: left;
+}
+.empty-tx-emoji {
+  font-size: 40px;
+  line-height: 1;
+}
+.empty-tx-body h2 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin: 0 0 4px;
+  color: var(--ion-text-color);
+}
+.empty-tx-body p {
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  margin: 0;
+  line-height: 1.5;
+}
+.empty-tx-actions {
+  margin-top: 4px;
+}
+
+/* ============================================================
+   Category avatar
+   ============================================================ */
 .cat-avatar {
   width: 42px;
   height: 42px;
@@ -183,7 +373,9 @@ ion-card {
   display: inline-block;
 }
 
-/* ---------- List items ---------- */
+/* ============================================================
+   List items
+   ============================================================ */
 ion-item {
   --padding-start: 16px;
   --inner-padding-end: 16px;
@@ -191,13 +383,16 @@ ion-item {
 .tx-item h2 {
   font-weight: 600;
   font-size: 15px;
+  letter-spacing: -0.1px;
 }
 .tx-item p {
   font-size: 13px;
   color: var(--ion-color-medium);
 }
 
-/* ---------- Section heading ---------- */
+/* ============================================================
+   Section heading
+   ============================================================ */
 .section-head {
   display: flex;
   justify-content: space-between;
@@ -208,9 +403,12 @@ ion-item {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
+  letter-spacing: -0.2px;
 }
 
-/* ---------- Empty state ---------- */
+/* ============================================================
+   Empty state
+   ============================================================ */
 .center-empty {
   display: flex;
   flex-direction: column;
@@ -223,9 +421,12 @@ ion-item {
 .center-empty h2 {
   font-weight: 700;
   margin: 12px 0 6px;
+  letter-spacing: -0.2px;
 }
 
-/* ---------- Segment (pill style) ---------- */
+/* ============================================================
+   Segment (pill style)
+   ============================================================ */
 ion-segment {
   --background: rgba(var(--ion-text-color-rgb), 0.06);
   border-radius: 14px;
@@ -242,18 +443,24 @@ ion-segment-button {
   letter-spacing: 0;
 }
 
-/* ---------- FAB ---------- */
+/* ============================================================
+   FAB — per-module accent via html[data-module]
+   ============================================================ */
 ion-fab-button {
   --box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+  transition: transform var(--app-dur) var(--app-ease-bounce),
+    box-shadow var(--app-dur) var(--app-ease);
+}
+ion-fab-button:active {
+  transform: scale(0.92);
 }
 
-/* ---------- Tab bar ---------- */
+/* ============================================================
+   Tab bar (legacy per-module) — di-nonaktifkan karena Moraven
+   memakai BottomNav global + ModuleSubTabs.
+   ============================================================ */
 ion-tab-bar {
-  --background: var(--ion-toolbar-background);
-  border-top: 1px solid rgba(var(--ion-text-color-rgb), 0.06);
-  height: 60px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  display: none !important;
 }
 ion-tab-button {
   --color: var(--ion-color-medium);
@@ -264,63 +471,291 @@ ion-tab-button ion-label {
   font-weight: 600;
 }
 
-/* ---------- Progress bar (budget) ---------- */
+/* ============================================================
+   Module bottom-nav (per-module). Tampil di dalam modul, berisi
+   tab utama + tombol kembali ke menu utama. Maks 5 item.
+   ============================================================ */
+.module-bottomnav {
+  /* Tambah border top halus untuk pemisah. */
+  border-top: 1px solid rgba(var(--ion-text-color-rgb), 0.06);
+}
+
+/* Pages with sub-tabs need extra bottom padding. */
+.has-bottomnav ion-content {
+  --padding-bottom: calc(
+    var(--app-bottomnav-h) + env(safe-area-inset-bottom) + 8px
+  );
+}
+
+/* ============================================================
+   Progress bar (budget)
+   ============================================================ */
 ion-progress-bar {
   height: 8px;
   border-radius: 6px;
   --background: rgba(var(--ion-text-color-rgb), 0.08);
 }
 
-/* ---------- Launcher ---------- */
-.launcher-head {
-  padding: 12px 20px 20px;
+/* ============================================================
+   Global bottom nav (Moraven shell)
+   ============================================================ */
+.moraven-bottomnav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: calc(var(--app-bottomnav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--ion-toolbar-background);
+  border-top: 1px solid rgba(var(--ion-text-color-rgb), 0.06);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
-.launcher-head h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.6px;
-  line-height: 1.2;
-}
-.launcher-head p {
-  margin: 6px 0 0;
-  color: var(--ion-color-medium);
-  font-size: 14px;
-  font-weight: 500;
-}
-.launcher-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 8px 16px 16px;
-}
-.launcher-card {
+.moraven-bottomnav button {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: var(--app-bottomnav-h);
+  background: transparent;
+  border: 0;
+  color: var(--ion-color-medium);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  position: relative;
+  transition: color var(--app-dur-fast) var(--app-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.moraven-bottomnav button ion-icon {
+  font-size: 24px;
+  transition: transform var(--app-dur) var(--app-ease-bounce);
+}
+.moraven-bottomnav button:active ion-icon {
+  transform: scale(0.85);
+}
+.moraven-bottomnav button.active {
+  color: var(--ion-color-primary);
+}
+.moraven-bottomnav button.active ion-icon {
+  transform: translateY(-2px);
+}
+.moraven-bottomnav button.active::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--ion-color-primary);
+  box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.4);
+}
+.moraven-bottomnav button.active.module-finance {
+  color: #6366f1;
+}
+.moraven-bottomnav button.active.module-finance::before {
+  background: #6366f1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+.moraven-bottomnav button.active.module-todo {
+  color: #0ea5e9;
+}
+.moraven-bottomnav button.active.module-todo::before {
+  background: #0ea5e9;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+.moraven-bottomnav button.active.module-habit {
+  color: #f59e0b;
+}
+.moraven-bottomnav button.active.module-habit::before {
+  background: #f59e0b;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Pages with bottom nav need extra bottom padding so content isn't clipped. */
+.has-bottomnav ion-content {
+  --padding-bottom: calc(var(--app-bottomnav-h) + env(safe-area-inset-bottom) + 8px);
+}
+
+/* ============================================================
+   Launcher — redesigned hero + card grid
+   ============================================================ */
+.launcher-hero {
+  position: relative;
+  margin: 8px 16px 18px;
+  padding: 26px 24px 28px;
+  border-radius: var(--app-card-radius-lg);
+  background: var(--app-gradient);
+  color: #fff;
+  box-shadow: var(--app-shadow-glow);
+  overflow: hidden;
+  isolation: isolate;
+}
+.launcher-hero::before,
+.launcher-hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(4px);
+  z-index: -1;
+}
+.launcher-hero::before {
+  top: -60px;
+  right: -30px;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.launcher-hero::after {
+  bottom: -80px;
+  left: -30px;
+  width: 180px;
+  height: 180px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.launcher-hero .l-greet {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+.launcher-hero .l-name {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  line-height: 1.15;
+  margin-top: 4px;
+}
+.launcher-hero .l-name em {
+  font-style: normal;
+  background: linear-gradient(120deg, #fde68a 0%, #fbcfe8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.launcher-hero .l-date {
+  margin-top: 6px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.launcher-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  padding: 18px 8px;
-  border: none;
-  border-radius: 20px;
+  margin: 0 16px 18px;
+}
+.launcher-stat {
+  padding: 14px 12px;
+  border-radius: var(--app-card-radius-sm);
+  background: var(--ion-card-background);
+  box-shadow: var(--app-shadow-soft);
+  text-align: left;
+}
+.launcher-stat .l-stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 16px;
+}
+.launcher-stat .l-stat-value {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+}
+.launcher-stat .l-stat-label {
+  font-size: 11px;
+  color: var(--ion-color-medium);
+  margin-top: 2px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.launcher-section-title {
+  padding: 6px 20px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.launcher-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 4px 16px 16px;
+}
+@media (min-width: 480px) {
+  .launcher-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.launcher-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 16px;
+  border: 0;
+  border-radius: var(--app-card-radius);
   background: var(--ion-card-background);
   box-shadow: var(--app-shadow-soft);
   cursor: pointer;
   font-family: inherit;
   color: inherit;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform var(--app-dur) var(--app-ease),
+    box-shadow var(--app-dur) var(--app-ease);
   -webkit-tap-highlight-color: transparent;
+  animation: launcher-card-in var(--app-dur-slow) var(--app-ease) both;
 }
 .launcher-card:hover {
   box-shadow: var(--app-shadow);
+  transform: translateY(-1px);
 }
 .launcher-card:active {
-  transform: scale(0.94);
+  transform: scale(0.98);
 }
 .launcher-card:focus-visible {
   outline: 3px solid var(--ion-color-primary);
   outline-offset: 2px;
 }
-.launcher-icon {
+.launcher-card::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.08;
+  background: var(--lc-color, var(--ion-color-primary));
+  z-index: -1;
+  transition: transform var(--app-dur-slow) var(--app-ease);
+}
+.launcher-card:hover::after {
+  transform: scale(1.4);
+}
+.launcher-card .lc-icon {
   width: 56px;
   height: 56px;
   border-radius: 18px;
@@ -328,23 +763,60 @@ ion-progress-bar {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 28px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  font-size: 26px;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
-.launcher-icon ion-icon {
-  font-size: 28px;
+.launcher-card .lc-body {
+  flex: 1;
+  min-width: 0;
 }
-.launcher-label {
-  font-size: 13px;
-  font-weight: 600;
+.launcher-card .lc-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
   color: var(--ion-text-color);
-  text-align: center;
+}
+.launcher-card .lc-desc {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ion-color-medium);
+  font-weight: 500;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.launcher-card .lc-arrow {
+  color: var(--ion-color-medium);
+  font-size: 22px;
+  flex-shrink: 0;
+  transition: transform var(--app-dur) var(--app-ease);
+}
+.launcher-card:hover .lc-arrow {
+  transform: translateX(2px);
+  color: var(--lc-color, var(--ion-color-primary));
 }
 
-@media (min-width: 600px) {
-  .launcher-grid {
-    grid-template-columns: repeat(4, 1fr);
+@keyframes launcher-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.launcher-card:nth-child(2) {
+  animation-delay: 60ms;
+}
+.launcher-card:nth-child(3) {
+  animation-delay: 120ms;
+}
+.launcher-card:nth-child(4) {
+  animation-delay: 180ms;
 }
 
 .launcher-foot {
@@ -361,10 +833,7 @@ ion-progress-bar {
 }
 
 /* ============================================================
-   Per-module theming — saat user masuk modul, body[data-module]
-   memberi nuansa modul tsb: gradient header, tab indicator, dan
-   empty state ilustratif. --module-accent di-set via JS di
-   ModuleHost.tsx berdasarkan ModuleDescriptor.color.
+   Per-module theming via html[data-module]
    ============================================================ */
 html[data-module] {
   --module-accent-rgb: 99, 102, 241;
@@ -379,7 +848,6 @@ html[data-module='todo'] {
   --module-accent-rgb: 14, 165, 233;
 }
 
-/* Toolbar di dalam modul: gradient samar dengan accent modul */
 html[data-module] ion-toolbar {
   --background: linear-gradient(
     180deg,
@@ -388,20 +856,18 @@ html[data-module] ion-toolbar {
   );
   --color: var(--ion-text-color);
 }
-
-/* FAB shadow memakai accent modul */
 html[data-module] ion-fab-button {
   --background: rgb(var(--module-accent-rgb));
   --color: #fff;
   --box-shadow: 0 8px 20px rgba(var(--module-accent-rgb), 0.45);
 }
-
-/* Tab bar (jika ada) ikut accent */
 html[data-module] ion-tab-button {
   --color-selected: rgb(var(--module-accent-rgb));
 }
 
-/* Empty state ilustratif */
+/* ============================================================
+   Empty state ilustratif (module-empty)
+   ============================================================ */
 .module-empty {
   display: flex;
   flex-direction: column;
@@ -423,6 +889,7 @@ html[data-module] ion-tab-button {
   font-weight: 700;
   margin: 0 0 4px;
   color: var(--ion-text-color);
+  letter-spacing: -0.2px;
 }
 .module-empty p {
   margin: 0;
@@ -435,3 +902,191 @@ html[data-module] ion-tab-button {
   50% { transform: translateY(-6px); }
 }
 
+/* ============================================================
+   Settings menu (kategori: Umum/Keuangan/Tugas/Kebiasaan/Data)
+   ============================================================ */
+.settings-menu-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 16px 16px;
+}
+.settings-menu-tile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: var(--app-card-radius);
+  background: var(--ion-card-background);
+  box-shadow: var(--app-shadow-soft);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  transition: transform var(--app-dur) var(--app-ease),
+    box-shadow var(--app-dur) var(--app-ease);
+  -webkit-tap-highlight-color: transparent;
+  animation: launcher-card-in var(--app-dur-slow) var(--app-ease) both;
+}
+.settings-menu-tile:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--app-shadow);
+}
+.settings-menu-tile:active {
+  transform: scale(0.98);
+}
+.settings-menu-tile:focus-visible {
+  outline: 3px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}
+.settings-menu-tile::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.08;
+  background: var(--tile-color, var(--ion-color-primary));
+  z-index: -1;
+  transition: transform var(--app-dur-slow) var(--app-ease);
+}
+.settings-menu-tile:hover::after {
+  transform: scale(1.4);
+}
+.smt-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+.smt-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.smt-label {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--ion-text-color);
+}
+.smt-desc {
+  font-size: 12.5px;
+  color: var(--ion-color-medium);
+  font-weight: 500;
+  line-height: 1.35;
+}
+.smt-arrow {
+  color: var(--ion-color-medium);
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: transform var(--app-dur) var(--app-ease);
+}
+.settings-menu-tile:hover .smt-arrow {
+  transform: translateX(2px);
+  color: var(--tile-color, var(--ion-color-primary));
+}
+.settings-menu-tile:nth-child(2) { animation-delay: 60ms; }
+.settings-menu-tile:nth-child(3) { animation-delay: 120ms; }
+.settings-menu-tile:nth-child(4) { animation-delay: 180ms; }
+.settings-menu-tile:nth-child(5) { animation-delay: 240ms; }
+
+/* ============================================================
+   Theme preset chip row (Umum → Tampilan)
+   ============================================================ */
+.theme-preset-row {
+  display: flex;
+  gap: 10px;
+  padding: 6px 0 10px;
+  flex-wrap: wrap;
+}
+.theme-preset-chip {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--app-dur-fast) var(--app-ease),
+    border-color var(--app-dur-fast) var(--app-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-preset-chip:hover {
+  transform: scale(1.05);
+}
+.theme-preset-chip.active {
+  border-color: var(--ion-text-color);
+  transform: scale(1.05);
+}
+
+/* ============================================================
+   Generic helpers
+   ============================================================ */
+.muted {
+  color: var(--ion-color-medium);
+}
+
+/* ============================================================
+   Page enter animation
+   ============================================================ */
+@keyframes app-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ion-page > ion-content {
+  animation: app-page-in var(--app-dur) var(--app-ease);
+}
+
+/* Interactive cards/buttons get a small lift on press */
+ion-button {
+  --transition: background-color var(--app-dur-fast) var(--app-ease),
+    color var(--app-dur-fast) var(--app-ease),
+    transform var(--app-dur-fast) var(--app-ease);
+}
+ion-button:active:not([disabled]) {
+  transform: scale(0.97);
+}
+
+/* Smooth focus for keyboard users (no harsh outline flash) */
+:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Better scrollbar inside launcher sections on desktop */
+@media (hover: hover) and (pointer: fine) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(var(--ion-text-color-rgb), 0.18);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--ion-text-color-rgb), 0.3);
+  }
+}
+
+/* Onboarding tetap bersih tanpa bottom-nav — BottomNav menyembunyikan
+   dirinya sendiri pada path /onboarding, sehingga padding tetap aman
+   untuk shell utama. */

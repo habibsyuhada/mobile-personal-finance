@@ -41,6 +41,7 @@ function mapTask(r: Row): Task {
     sortOrder: Number(r.sort_order),
     recurFreq: (r.recur_freq as Task['recurFreq']) ?? null,
     recurInterval: r.recur_interval != null ? Number(r.recur_interval) : null,
+    alarmTime: (r.alarm_time as string) ?? null,
     createdAt: String(r.created_at),
     updatedAt: String(r.updated_at),
   };
@@ -245,14 +246,15 @@ export class SqliteTodoRepository implements ITodoRepository {
       sortOrder: input.sortOrder ?? 0,
       recurFreq: input.recurFreq ?? null,
       recurInterval: input.recurInterval ?? null,
+      alarmTime: input.alarmTime ?? null,
       createdAt: now,
       updatedAt: now,
     };
     await this.db.run(
       `INSERT INTO todo_tasks
         (id, list_id, title, note, priority, due_at, has_time, starred, completed,
-         completed_at, sort_order, recur_freq, recur_interval, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+         completed_at, sort_order, recur_freq, recur_interval, alarm_time, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
       [
         task.id,
         task.listId,
@@ -267,6 +269,7 @@ export class SqliteTodoRepository implements ITodoRepository {
         task.sortOrder,
         task.recurFreq,
         task.recurInterval,
+        task.alarmTime,
         task.createdAt,
         task.updatedAt,
       ]
@@ -281,7 +284,8 @@ export class SqliteTodoRepository implements ITodoRepository {
     const merged: Task = { ...existing, ...patch, updatedAt: nowIso() };
     await this.db.run(
       `UPDATE todo_tasks SET list_id = ?, title = ?, note = ?, priority = ?, due_at = ?,
-         has_time = ?, starred = ?, recur_freq = ?, recur_interval = ?, updated_at = ? WHERE id = ?;`,
+         has_time = ?, starred = ?, recur_freq = ?, recur_interval = ?, alarm_time = ?,
+         updated_at = ? WHERE id = ?;`,
       [
         merged.listId,
         merged.title,
@@ -292,6 +296,7 @@ export class SqliteTodoRepository implements ITodoRepository {
         merged.starred ? 1 : 0,
         merged.recurFreq ?? null,
         merged.recurInterval ?? null,
+        merged.alarmTime ?? null,
         merged.updatedAt,
         id,
       ]
