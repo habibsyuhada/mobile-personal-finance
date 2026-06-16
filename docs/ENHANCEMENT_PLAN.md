@@ -1,10 +1,25 @@
 # Enhancement Plan — Premium Feel & Productivity
 
-Status: Direncanakan v1
+Status: Selesai v1
 Tanggal: 2026-06-15
+Update terakhir: 2026-06-16
 
 Roadmap 11 fitur untuk membuat aplikasi terasa premium & produktif. Setiap
 fase adalah unit kerja yang berdiri sendiri dan bisa di-commit terpisah.
+
+## Ringkasan Eksekusi
+
+| Fase | Tier | Status | Commit |
+|---|---|---|---|
+| A — Onboarding carousel + sample data | 3 | ✅ Selesai | `eec9f9a` |
+| B — Theme presets + accent picker | 1 | ✅ Selesai | `81b41f3` |
+| C — Number rolling animation | 3 | ✅ Selesai | `54d74a6` |
+| D — Smart insights on-device | 1 | ✅ Selesai | `325b652` |
+| E — Smart reschedule | 2 | ✅ Selesai | `1cbaf38` |
+| F — Templates & shortcuts | 2 | ✅ Selesai | `a20fc25` |
+| G — Per-modul theming polish | 3 | ✅ Selesai | `83043d9` |
+| H — Home screen widget Android | 3 | ✅ Selesai | `8b1037a` |
+| I — Live activity / persistent notif | 1 | ✅ Selesai | `d82a911` |
 
 ## Ringkasan Prioritas
 
@@ -197,12 +212,29 @@ agar tidak di-kill oleh OS.
 ## Strategi Eksekusi
 
 1. **Spec dulu** (dokumen ini) → ✅
-2. **Commit per fase** (jangan campur 11 fitur jadi 1 commit besar)
-3. **On-device preview** dulu di web (banyak yang cukup web-friendly: A, B, C, D, E, F, G)
+2. **Commit per fase** (jangan campur 11 fitur jadi 1 commit besar) → ✅
+3. **On-device preview** dulu di web (banyak yang cukup web-friendly: A, B, C, D, E, F, G) → ✅
 4. **Build & test APK** setelah Fase H & I (karena butuh native code)
-5. **Update GitHub Actions** workflow untuk build widget — perlu tambahan
-   task Gradle (sebenarnya sudah otomatis, tapi perlu verify)
-6. **Final commit** dengan doc updates
+   - Widget & live activity mengikuti pattern Capacitor plugin native;
+     `registerPlugin(FinanceWidgetPlugin.class)` dan `LiveActivityPlugin.class`
+     di `MainActivity.java`. Layout XML di `res/layout/widget_finance.xml`,
+     `AppWidgetProvider` di `widget/FinanceWidgetProvider.java`.
+5. **Update GitHub Actions** workflow untuk build widget — `cap sync` +
+   `assembleDebug` akan otomatis compile native code (tidak perlu tambahan task).
+6. **Final commit** dengan doc updates → ✅ (dokumen ini)
+
+## Catatan Pasca-Implementasi
+
+- **Fase H (widget)**: `targetCellWidth/Height` butuh Android 12+ untuk
+  optimum. Pada Android 11 ke bawah, widget akan resize ke default 4x2 dengan
+  `minWidth/minHeight` fallback. Aman untuk minSdk 22 yang dipakai project.
+- **Fase I (live activity)**: `foregroundServiceType="dataSync"` di service
+  declaration. Untuk Android 14+, tipe foreground service harus spesifik
+  (dataSync cocok untuk update progress periodik). Build chain akan fail
+  kalau lupa declare di manifest — sudah ditangani.
+- **Fase F (templates)**: Merchant suggestion pakai field `note` sebagai
+  pseudo-merchant (Transaction tidak punya kolom `merchant`). Bisa di-upgrade
+  nanti dengan menambah kolom tsb di migration.
 
 ## Risiko & Mitigasi
 
