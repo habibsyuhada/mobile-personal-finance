@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   IonModal,
   IonHeader,
@@ -17,6 +17,7 @@ import {
   IonDatetime,
   IonTextarea,
   IonText,
+  IonChip,
 } from '@ionic/react';
 import type { NewTransaction, Transaction, TransactionType } from '@/modules/finance/data/models';
 import { useFinanceStore } from '@/modules/finance/store/finance.store';
@@ -24,6 +25,7 @@ import { useSettingsStore } from '@/store/settings.store';
 import { toMinor, fromMinor, parseAmount } from '@/lib/currency';
 import { nowIso } from '@/lib/id';
 import { useT } from '@/i18n/useT';
+import { buildMerchantSuggestions } from '@/features/templates/finance';
 
 interface Props {
   isOpen: boolean;
@@ -35,6 +37,7 @@ interface Props {
 export default function TransactionForm({ isOpen, onClose, editing, prefill }: Props) {
   const accounts = useFinanceStore((s) => s.accounts);
   const categories = useFinanceStore((s) => s.categories);
+  const allTransactions = useFinanceStore((s) => s.transactions);
   const addTransaction = useFinanceStore((s) => s.addTransaction);
   const updateTransaction = useFinanceStore((s) => s.updateTransaction);
   const currency = useSettingsStore((s) => s.currency);
@@ -84,6 +87,16 @@ export default function TransactionForm({ isOpen, onClose, editing, prefill }: P
   const filteredCategories = categories.filter((c) =>
     type === 'income' ? c.kind === 'income' : c.kind === 'expense'
   );
+
+  const merchantSuggestions = useMemo(
+    () => (editing ? [] : buildMerchantSuggestions(allTransactions, note, 5)),
+    [allTransactions, note, editing]
+  );
+
+  const applyMerchant = (text: string, categoryId: string | null) => {
+    setNote(text);
+    if (categoryId) setCategoryId(categoryId);
+  };
 
   const handleSave = async () => {
     setError(null);
@@ -242,6 +255,31 @@ export default function TransactionForm({ isOpen, onClose, editing, prefill }: P
             onIonInput={(e) => setNote(e.detail.value ?? '')}
           />
         </IonItem>
+
+        {merchantSuggestions.length > 0 && (
+          <div style={{ padding: '8px 16px 0' }}>
+            <div
+              style={{
+                fontSize: 12,
+                color: 'var(--ion-color-medium)',
+                marginBottom: 6,
+              }}
+            >
+              {tr('txform.merchant.suggestions')}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {merchantSuggestions.map((s) => (
+                <IonChip
+                  key={s.text}
+                  outline
+                  onClick={() => applyMerchant(s.text, s.categoryId)}
+                >
+                  {s.text} · {s.count}
+                </IonChip>
+              ))}
+            </div>
+          </div>
+        )}
 
         {error && (
           <IonText color="danger">

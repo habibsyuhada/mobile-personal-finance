@@ -16,10 +16,16 @@ import {
   IonDatetime,
   IonToggle,
   IonText,
+  IonList,
+  IonNote,
+  IonIcon,
+  IonChip,
 } from '@ionic/react';
+import { storefrontOutline } from 'ionicons/icons';
 import type { NewTask, Task, Priority, RecurFreq } from '../data/models';
 import { useTodoStore } from '../store/todo.store';
 import { useT } from '@/i18n/useT';
+import { TASK_TEMPLATES, templateToNewTask, type TaskTemplate } from '@/features/templates/tasks';
 
 interface Props {
   isOpen: boolean;
@@ -44,6 +50,7 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
   const [starred, setStarred] = useState(false);
   const [recur, setRecur] = useState<RecurFreq | 'none'>('none');
   const [error, setError] = useState<string | null>(null);
+  const [templateOpen, setTemplateOpen] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -66,6 +73,18 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
     }
     setError(null);
   }, [isOpen, editing, defaultListId, lists]);
+
+  const applyTemplate = (tmpl: TaskTemplate) => {
+    const prefill = templateToNewTask(tmpl, (k) => tr(k as never), {
+      listId: listId || (lists[0]?.id ?? ''),
+    });
+    setTitle(prefill.title);
+    setNote(prefill.note ?? '');
+    setPriority(prefill.priority);
+    setStarred(prefill.starred);
+    setRecur(prefill.recurFreq ?? 'none');
+    setTemplateOpen(false);
+  };
 
   const save = async () => {
     if (!title.trim()) {
@@ -178,7 +197,73 @@ export default function TaskForm({ isOpen, onClose, editing, defaultListId, relo
             <p>{error}</p>
           </IonText>
         )}
+
+        {!editing && (
+          <div style={{ padding: '8px 16px' }}>
+            <IonButton
+              expand="block"
+              fill="outline"
+              onClick={() => setTemplateOpen(true)}
+            >
+              <IonIcon slot="start" icon={storefrontOutline} />
+              {tr('todo.useTemplate')}
+            </IonButton>
+          </div>
+        )}
       </IonContent>
+
+      <IonModal isOpen={templateOpen} onDidDismiss={() => setTemplateOpen(false)}>
+        <IonHeader className="ion-no-border">
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonButton onClick={() => setTemplateOpen(false)}>
+                {tr('common.cancel')}
+              </IonButton>
+            </IonButtons>
+            <IonTitle>{tr('todo.templates')}</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          {TASK_TEMPLATES.length === 0 ? (
+            <div className="center-empty">
+              <p>{tr('todo.template.empty')}</p>
+            </div>
+          ) : (
+            <IonList lines="none">
+              {TASK_TEMPLATES.map((t) => (
+                <IonItem
+                  key={t.id}
+                  button
+                  onClick={() => applyTemplate(t)}
+                  className="tx-item"
+                >
+                  <div slot="start" style={{ fontSize: 28, marginRight: 12 }}>
+                    {t.emoji}
+                  </div>
+                  <IonLabel>
+                    <h2 style={{ fontWeight: 600 }}>{tr(t.titleKey)}</h2>
+                    <p style={{ color: 'var(--ion-color-medium)' }}>
+                      {tr(t.descriptionKey)}
+                    </p>
+                    {t.recurFreq && (
+                      <IonChip
+                        outline
+                        color="primary"
+                        style={{ marginTop: 6 }}
+                      >
+                        {tr(`todo.repeat.${t.recurFreq}` as 'todo.repeat.daily')}
+                      </IonChip>
+                    )}
+                  </IonLabel>
+                  <IonNote slot="end" style={{ fontSize: 18, color: 'var(--app-accent)' }}>
+                    {t.priority > 0 ? '★'.repeat(t.priority) : ''}
+                  </IonNote>
+                </IonItem>
+              ))}
+            </IonList>
+          )}
+        </IonContent>
+      </IonModal>
     </IonModal>
   );
 }

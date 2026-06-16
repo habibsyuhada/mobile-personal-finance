@@ -20,16 +20,19 @@ import {
   IonCardContent,
   IonChip,
   useIonAlert,
+  IonModal,
+  useIonToast,
 } from '@ionic/react';
-import { add, trash, create as editIcon, archiveOutline, flame, refreshCircle } from 'ionicons/icons';
+import { add, trash, create as editIcon, archiveOutline, flame, refreshCircle, flashOutline } from 'ionicons/icons';
 import { useHabitStore, habitService } from '../store/habit.store';
 import { iconForCategory } from '@/lib/categoryIcons';
 import { useT } from '@/i18n/useT';
-import { useIonToast } from '@ionic/react';
 import HabitForm from '../components/HabitForm';
 import Heatmap from '../components/Heatmap';
 import { MILESTONES, MILESTONE_META, unlockedFor } from '../lib/achievements';
+import { HABIT_BUNDLES, templateToNewHabit } from '@/features/templates/habits';
 import type { Habit, HabitLog, HabitStats } from '../data/models';
+import type { TranslationKey } from '@/i18n';
 
 export default function AllHabitsPage() {
   const habits = useHabitStore((s) => s.habits);
@@ -37,6 +40,7 @@ export default function AllHabitsPage() {
   const archiveHabit = useHabitStore((s) => s.archiveHabit);
   const deleteHabit = useHabitStore((s) => s.deleteHabit);
   const restartStreak = useHabitStore((s) => s.restartStreak);
+  const addHabit = useHabitStore((s) => s.addHabit);
   const tr = useT();
   const [presentAlert] = useIonAlert();
   const [presentToast] = useIonToast();
@@ -47,6 +51,8 @@ export default function AllHabitsPage() {
   const [stats, setStats] = useState<HabitStats | null>(null);
   const [logs, setLogs] = useState<HabitLog[]>([]);
   const [unlockedBadges, setUnlockedBadges] = useState<number[]>([]);
+  const [bundleOpen, setBundleOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     refreshHabits();
@@ -224,6 +230,11 @@ export default function AllHabitsPage() {
       <IonHeader className="ion-no-border">
         <IonToolbar>
           <IonTitle>{tr('habit.all')}</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={() => setBundleOpen(true)}>
+              <IonIcon slot="icon-only" icon={flashOutline} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -288,6 +299,84 @@ export default function AllHabitsPage() {
             setEditing(null);
           }}
         />
+
+        <IonModal isOpen={bundleOpen} onDidDismiss={() => setBundleOpen(false)}>
+          <IonHeader className="ion-no-border">
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonButton onClick={() => setBundleOpen(false)}>
+                  {tr('common.cancel')}
+                </IonButton>
+              </IonButtons>
+              <IonTitle>{tr('habit.bundle.title')}</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <p
+              style={{
+                padding: '12px 16px',
+                color: 'var(--ion-color-medium)',
+                fontSize: 13,
+              }}
+            >
+              {tr('habit.bundle.subtitle')}
+            </p>
+            <IonList lines="none">
+              {HABIT_BUNDLES.map((b) => (
+                <IonItem
+                  key={b.id}
+                  button
+                  disabled={creating}
+                  onClick={async () => {
+                    setCreating(true);
+                    try {
+                      for (const tmpl of b.habits) {
+                        const input = templateToNewHabit(tmpl, b.reminderTime, (k) => tr(k as TranslationKey));
+                        await addHabit(input);
+                      }
+                      setBundleOpen(false);
+                      presentToast({
+                        message: `${b.emoji} ${b.habits.length} habits added`,
+                        duration: 2200,
+                        position: 'bottom',
+                        icon: flashOutline,
+                      });
+                    } catch (e) {
+                      presentToast({
+                        message: e instanceof Error ? e.message : String(e),
+                        duration: 3000,
+                        position: 'bottom',
+                        color: 'danger',
+                      });
+                    } finally {
+                      setCreating(false);
+                    }
+                  }}
+                  className="tx-item"
+                >
+                  <div slot="start" style={{ fontSize: 28, marginRight: 12 }}>
+                    {b.emoji}
+                  </div>
+                  <IonLabel>
+                    <h2 style={{ fontWeight: 600 }}>{tr(b.titleKey)}</h2>
+                    <p style={{ color: 'var(--ion-color-medium)' }}>
+                      {tr(b.descriptionKey)}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        color: 'var(--app-accent)',
+                        marginTop: 4,
+                      }}
+                    >
+                      {b.habits.length} habits · ⏰ {b.reminderTime}
+                    </p>
+                  </IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+          </IonContent>
+        </IonModal>
       </IonContent>
     </IonPage>
   );
