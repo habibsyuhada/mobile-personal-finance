@@ -5,7 +5,7 @@ import {
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
 
-const DB_NAME = 'personal_finance';
+const DB_NAME = 'moraven';
 
 export interface QueryResult {
   values: Record<string, unknown>[];

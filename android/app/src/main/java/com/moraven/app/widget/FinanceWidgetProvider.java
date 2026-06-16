@@ -1,4 +1,4 @@
-package com.finance.personal.widget;
+package com.moraven.app.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -10,8 +10,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
-import com.finance.personal.MainActivity;
-import com.finance.personal.R;
+import com.moraven.app.MainActivity;
+import com.moraven.app.R;
 
 /**
  * Widget 4x2: 3 task due hari ini (belum selesai) + habit streak tertinggi

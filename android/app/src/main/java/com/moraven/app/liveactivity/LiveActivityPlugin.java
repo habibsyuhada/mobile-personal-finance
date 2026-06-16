@@ -1,4 +1,4 @@
-package com.finance.personal.liveactivity;
+package com.moraven.app.liveactivity;
 
 import android.content.Context;
 import android.content.Intent;

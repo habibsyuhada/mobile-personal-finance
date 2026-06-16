@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Keuangan Pribadi</string>
-    <string name="title_activity_main">Keuangan Pribadi</string>
-    <string name="package_name">com.finance.personal</string>
-    <string name="custom_url_scheme">com.finance.personal</string>
+    <string name="app_name">Moraven</string>
+    <string name="title_activity_main">Moraven</string>
+    <string name="package_name">com.moraven.app</string>
+    <string name="custom_url_scheme">com.moraven.app</string>
 </resources>

@@ -183,7 +183,7 @@ export const en: Record<keyof typeof id, string> = {
   'settings.resetDone': 'All data has been deleted.',
 
   // Launcher (platform)
-  'launcher.title': 'My Apps',
+  'launcher.title': 'Moraven',
   'launcher.chooseModule': 'Choose a module to get started',
   'launcher.settings': 'Settings',
   'launcher.moduleUnavailable': 'Module unavailable.',

@@ -1,9 +1,9 @@
-package com.finance.personal;
+package com.moraven.app;
 
 import android.os.Bundle;
 
-import com.finance.personal.liveactivity.LiveActivityPlugin;
-import com.finance.personal.widget.FinanceWidgetPlugin;
+import com.moraven.app.liveactivity.LiveActivityPlugin;
+import com.moraven.app.widget.FinanceWidgetPlugin;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {

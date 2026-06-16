@@ -1,4 +1,4 @@
-package com.finance.personal.liveactivity;
+package com.moraven.app.liveactivity;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,8 +13,8 @@ import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
 
-import com.finance.personal.MainActivity;
-import com.finance.personal.R;
+import com.moraven.app.MainActivity;
+import com.moraven.app.R;
 
 /**
  * ForegroundService yang menampilkan persistent notification
@@ -33,9 +33,9 @@ public class LiveActivityService extends Service {
     public static final String KEY_PROGRESS = "progress";
     public static final String KEY_TOTAL = "total";
 
-    public static final String ACTION_START = "com.finance.personal.LIVE_ACTIVITY_START";
-    public static final String ACTION_STOP = "com.finance.personal.LIVE_ACTIVITY_STOP";
-    public static final String ACTION_UPDATE = "com.finance.personal.LIVE_ACTIVITY_UPDATE";
+    public static final String ACTION_START = "com.moraven.app.LIVE_ACTIVITY_START";
+    public static final String ACTION_STOP = "com.moraven.app.LIVE_ACTIVITY_STOP";
+    public static final String ACTION_UPDATE = "com.moraven.app.LIVE_ACTIVITY_UPDATE";
 
     @Override
     public IBinder onBind(Intent intent) {

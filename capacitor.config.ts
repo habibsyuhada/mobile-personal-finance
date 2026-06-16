@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.finance.personal',
-  appName: 'Keuangan Pribadi',
+  appId: 'com.moraven.app',
+  appName: 'Moraven',
   webDir: 'dist',
   plugins: {
     CapacitorSQLite: {

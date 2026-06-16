@@ -1,4 +1,4 @@
-# Keuangan Pribadi
+# Moraven
 
 Aplikasi mobile pencatatan keuangan pribadi. Offline-first, tanpa login, dengan
 fitur scan struk berbasis AI. Dibangun dengan React + Ionic + Capacitor, data

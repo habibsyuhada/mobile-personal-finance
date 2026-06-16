@@ -1,4 +1,4 @@
-package com.finance.personal.widget;
+package com.moraven.app.widget;
 
 import android.content.Context;
 import android.content.SharedPreferences;
