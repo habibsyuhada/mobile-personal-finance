@@ -10,6 +10,10 @@ import { useSettingsStore, onNotifSettingChange } from '@/store/settings.store';
 import { useBannerStore } from '@/store/banner.store';
 import { useOnboardingStore } from '@/store/onboarding.store';
 import { useCelebration } from '@/store/celebration.store';
+import { useFinanceStore } from '@/modules/finance/store/finance.store';
+import { useTodoStore } from '@/modules/todo/store/todo.store';
+import { useHabitStore } from '@/modules/habit/store/habit.store';
+import { computeWidgetSnapshot, pushWidgetSnapshot } from '@/platform/widgetSnapshot';
 import Launcher from './Launcher';
 import ModuleHost from './ModuleHost';
 import GlobalSettings from './GlobalSettings';
@@ -105,6 +109,30 @@ export default function App() {
       cancelled = true;
     };
   }, []);
+
+  // Widget snapshot: subscribe ke 3 store utama, push ke native bila berubah.
+  // (No-op di platform non-Android.)
+  useEffect(() => {
+    let pending: ReturnType<typeof setTimeout> | null = null;
+    const schedule = () => {
+      if (pending) return;
+      pending = setTimeout(() => {
+        pending = null;
+        void pushWidgetSnapshot(computeWidgetSnapshot());
+      }, 400);
+    };
+    const us1 = useFinanceStore.subscribe(schedule);
+    const us2 = useTodoStore.subscribe(schedule);
+    const us3 = useHabitStore.subscribe(schedule);
+    // Push sekali saat ready.
+    schedule();
+    return () => {
+      us1();
+      us2();
+      us3();
+      if (pending) clearTimeout(pending);
+    };
+  }, [ready]);
 
   if (error) {
     return (
