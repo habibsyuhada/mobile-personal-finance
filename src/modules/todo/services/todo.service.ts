@@ -137,4 +137,17 @@ export class TodoService {
   async cancelReminder(taskId: string): Promise<void> {
     await Notifications.cancel(`task:${taskId}`);
   }
+
+  /** Tunda task 1 hari (atau jumlah hari tertentu) ke depan. */
+  async postpone(task: Task, days = 1): Promise<Task | null> {
+    if (!task.dueAt) return null;
+    const current = new Date(task.dueAt);
+    current.setDate(current.getDate() + days);
+    const updated = await this.repo.updateTask(task.id, {
+      dueAt: current.toISOString(),
+      hasTime: task.hasTime,
+    });
+    await this.scheduleReminder(updated);
+    return updated;
+  }
 }

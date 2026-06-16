@@ -21,10 +21,11 @@ import {
   IonChip,
   useIonAlert,
 } from '@ionic/react';
-import { add, trash, create as editIcon, archiveOutline, flame } from 'ionicons/icons';
+import { add, trash, create as editIcon, archiveOutline, flame, refreshCircle } from 'ionicons/icons';
 import { useHabitStore, habitService } from '../store/habit.store';
 import { iconForCategory } from '@/lib/categoryIcons';
 import { useT } from '@/i18n/useT';
+import { useIonToast } from '@ionic/react';
 import HabitForm from '../components/HabitForm';
 import Heatmap from '../components/Heatmap';
 import { MILESTONES, MILESTONE_META, unlockedFor } from '../lib/achievements';
@@ -35,8 +36,10 @@ export default function AllHabitsPage() {
   const refreshHabits = useHabitStore((s) => s.refreshHabits);
   const archiveHabit = useHabitStore((s) => s.archiveHabit);
   const deleteHabit = useHabitStore((s) => s.deleteHabit);
+  const restartStreak = useHabitStore((s) => s.restartStreak);
   const tr = useT();
   const [presentAlert] = useIonAlert();
+  const [presentToast] = useIonToast();
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Habit | null>(null);
@@ -65,6 +68,28 @@ export default function AllHabitsPage() {
       buttons: [
         { text: tr('common.cancel'), role: 'cancel' },
         { text: tr('common.delete'), role: 'destructive', handler: () => deleteHabit(h.id) },
+      ],
+    });
+  };
+
+  const confirmRestartStreak = (h: Habit) => {
+    presentAlert({
+      header: tr('habit.restartStreak.title'),
+      message: tr('habit.restartStreak.body'),
+      buttons: [
+        { text: tr('common.cancel'), role: 'cancel' },
+        {
+          text: tr('habit.restartStreak.confirm'),
+          handler: async () => {
+            await restartStreak(h);
+            presentToast({
+              message: tr('habit.restartStreak.done'),
+              duration: 2200,
+              position: 'bottom',
+              icon: refreshCircle,
+            });
+          },
+        },
       ],
     });
   };
@@ -119,6 +144,19 @@ export default function AllHabitsPage() {
                   </div>
                 </div>
               </div>
+              {(stats?.currentStreak ?? 0) === 0 && (stats?.bestStreak ?? 0) > 0 && (
+                <div style={{ marginTop: 12, textAlign: 'center' }}>
+                  <IonButton
+                    size="small"
+                    fill="outline"
+                    color="warning"
+                    onClick={() => confirmRestartStreak(detail)}
+                  >
+                    <IonIcon slot="start" icon={refreshCircle} />
+                    {tr('habit.restartStreak')}
+                  </IonButton>
+                </div>
+              )}
             </IonCardContent>
           </IonCard>
 

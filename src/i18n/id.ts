@@ -228,6 +228,10 @@ export const id = {
   'todo.deleteListTitle': 'Hapus daftar?',
   'todo.deleteListMsg': 'Tugas di daftar ini akan dipindahkan ke Inbox.',
   'todo.tasksCount': '{count} tugas',
+  'todo.postponed': '“{title}” diundur ke besok',
+  'todo.useTemplate': 'Pakai Template',
+  'todo.templates': 'Template',
+  'todo.template.empty': 'Belum ada template.',
 
   // Habit
   'habit.today': 'Hari Ini',
@@ -271,6 +275,11 @@ export const id = {
   'habit.weekday.sun': 'Min',
   'habit.achievement.title': 'Pencapaian Baru!',
   'habit.achievement.body': 'Hebat! Rentetan {name} mencapai {days} hari.',
+  'habit.restartStreak': 'Mulai ulang rentetan',
+  'habit.restartStreak.title': 'Mulai ulang rentetan?',
+  'habit.restartStreak.body': 'Catat hari ini sebagai awal baru. Target 7 hari untuk membangun ulang.',
+  'habit.restartStreak.confirm': 'Mulai lagi',
+  'habit.restartStreak.done': 'Awal baru! Bidik 7 hari.',
 
   // Notifikasi
   'notif.title': 'Notifikasi',
@@ -290,6 +299,17 @@ export const id = {
   'notif.noon.habit.body': 'Jangan lupa cek-in: {name}',
   'notif.noon.task.body': '{count} tenggat hari ini',
   'notif.noon.finance.body': 'Belum ada transaksi hari ini. Yuk catat!',
+
+  // Recurring recovery
+  'finance.recurring.missedBanner':
+    '{count} transaksi berulang terlewat — proses sekarang?',
+  'finance.recurring.processNow': 'Proses',
+  'finance.recurring.processLater': 'Nanti',
+
+  // Templates
+  'habit.bundle.title': 'Paket Kebiasaan',
+  'habit.bundle.subtitle': 'Mulai satu set pilihan dalam satu ketukan',
+  'habit.bundle.create': 'Buat paket',
 
   // Onboarding
   'onboarding.welcome.title': 'Selamat Datang',

@@ -230,6 +230,10 @@ export const en: Record<keyof typeof id, string> = {
   'todo.deleteListTitle': 'Delete list?',
   'todo.deleteListMsg': 'Tasks in this list will be moved to Inbox.',
   'todo.tasksCount': '{count} tasks',
+  'todo.postponed': '“{title}” moved to tomorrow',
+  'todo.useTemplate': 'Use template',
+  'todo.templates': 'Templates',
+  'todo.template.empty': 'No templates yet.',
 
   // Habit
   'habit.today': 'Today',
@@ -273,6 +277,11 @@ export const en: Record<keyof typeof id, string> = {
   'habit.weekday.sun': 'Sun',
   'habit.achievement.title': 'New Achievement!',
   'habit.achievement.body': 'Awesome! {name} streak reached {days} days.',
+  'habit.restartStreak': 'Restart streak',
+  'habit.restartStreak.title': 'Restart streak?',
+  'habit.restartStreak.body': 'Log today as a fresh start. Target a 7-day streak to rebuild momentum.',
+  'habit.restartStreak.confirm': 'Start fresh',
+  'habit.restartStreak.done': 'Fresh start! Aim for 7 days.',
 
   // Notifications
   'notif.title': 'Notifications',
@@ -292,6 +301,16 @@ export const en: Record<keyof typeof id, string> = {
   'notif.noon.habit.body': "Don't forget to check in: {name}",
   'notif.noon.task.body': '{count} due today',
   'notif.noon.finance.body': 'No transactions today yet. Log one!',
+
+  // Recurring recovery
+  'finance.recurring.missedBanner': '{count} recurring transaction(s) missed — process now?',
+  'finance.recurring.processNow': 'Process',
+  'finance.recurring.processLater': 'Later',
+
+  // Templates
+  'habit.bundle.title': 'Habit Bundles',
+  'habit.bundle.subtitle': 'Start a curated set in one tap',
+  'habit.bundle.create': 'Create bundle',
 
   // Onboarding
   'onboarding.welcome.title': 'Welcome',

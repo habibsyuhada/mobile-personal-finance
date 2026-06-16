@@ -30,6 +30,17 @@ export class RecurringService {
   }
 
   /**
+   * Hitung jumlah aturan yang nextRun >= 7 hari di belakang now.
+   * Dipakai banner di dashboard sebagai early-warning (bukan auto-process).
+   */
+  async countMissed(now: Date = new Date()): Promise<number> {
+    const cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - 7);
+    const all = await this.rules.list();
+    return all.filter((r) => r.active && new Date(r.nextRunAt).getTime() < cutoff.getTime()).length;
+  }
+
+  /**
    * Proses semua aturan yang jatuh tempo, buat transaksi, dan majukan jadwal.
    * Dipanggil saat aplikasi dibuka (R1.7). Mengembalikan jumlah transaksi dibuat.
    */

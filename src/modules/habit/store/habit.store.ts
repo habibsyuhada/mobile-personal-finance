@@ -25,6 +25,7 @@ interface HabitState {
 
   toggleBinary: (habit: Habit) => Promise<void>;
   addAmount: (habit: Habit, delta: number) => Promise<void>;
+  restartStreak: (habit: Habit) => Promise<void>;
 }
 
 export const useHabitStore = create<HabitState>((set, get) => ({
@@ -85,6 +86,12 @@ export const useHabitStore = create<HabitState>((set, get) => ({
 
   addAmount: async (habit, delta) => {
     await habitService().addAmount(habit, delta);
+    await get().refreshToday();
+  },
+
+  restartStreak: async (habit) => {
+    await habitService().logToday(habit);
+    await get().refreshHabits();
     await get().refreshToday();
   },
 }));

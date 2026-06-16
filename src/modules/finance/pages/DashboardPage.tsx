@@ -18,7 +18,7 @@ import {
   IonSegment,
   IonSegmentButton,
 } from '@ionic/react';
-import { arrowDownOutline, arrowUpOutline, appsOutline } from 'ionicons/icons';
+import { arrowDownOutline, arrowUpOutline, appsOutline, alertCircleOutline, refreshOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { iconForCategory, colorForCategory, transferIcon } from '@/lib/categoryIcons';
 import { RollingNumber } from '@/lib/RollingNumber';
@@ -31,6 +31,8 @@ import { useFormatMoney } from '@/lib/useFormatMoney';
 import { rangeForPeriod, PeriodType, formatDate } from '@/lib/date';
 import { useT } from '@/i18n/useT';
 import { useSettingsStore } from '@/store/settings.store';
+import { Preferences } from '@capacitor/preferences';
+import { useIonToast } from '@ionic/react';
 
 export default function DashboardPage() {
   const accounts = useFinanceStore((s) => s.accounts);
@@ -45,6 +47,40 @@ export default function DashboardPage() {
 
   const [period, setPeriod] = useState<PeriodType>('month');
   const [totals, setTotals] = useState({ income: 0, expense: 0 });
+  const [missedRecurring, setMissedRecurring] = useState(0);
+  const [presentToast] = useIonToast();
+
+  useEffect(() => {
+    (async () => {
+      const dismissed = await Preferences.get({ key: 'finance.recurring.bannerDismissedAt' });
+      const dismissedAt = dismissed.value ? Number(dismissed.value) : 0;
+      // Tampilkan lagi kalau sudah lebih dari 24 jam sejak dismiss terakhir
+      if (Date.now() - dismissedAt > 24 * 60 * 60 * 1000) {
+        const count = await getServices().recurring.countMissed();
+        setMissedRecurring(count);
+      }
+    })();
+  }, []);
+
+  const handleProcessRecurring = async () => {
+    const created = await getServices().recurring.processDue();
+    setMissedRecurring(0);
+    await refreshAll();
+    presentToast({
+      message: `+${created} transaction${created === 1 ? '' : 's'}`,
+      duration: 2200,
+      position: 'bottom',
+      icon: refreshOutline,
+    });
+  };
+
+  const handleDismissRecurring = async () => {
+    setMissedRecurring(0);
+    await Preferences.set({
+      key: 'finance.recurring.bannerDismissedAt',
+      value: String(Date.now()),
+    });
+  };
 
   useEffect(() => {
     (async () => {
@@ -96,6 +132,32 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+
+        {missedRecurring > 0 && (
+          <div
+            style={{
+              margin: '12px 16px 0',
+              padding: '12px 14px',
+              borderRadius: 12,
+              background: 'rgba(245, 158, 11, 0.12)',
+              border: '1px solid rgba(245, 158, 11, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
+            <IonIcon icon={alertCircleOutline} style={{ color: '#f59e0b', fontSize: 20, flexShrink: 0 }} />
+            <div style={{ flex: 1, fontSize: 13, fontWeight: 500 }}>
+              {tr('finance.recurring.missedBanner', { count: missedRecurring })}
+            </div>
+            <IonButton size="small" color="warning" onClick={handleProcessRecurring}>
+              {tr('finance.recurring.processNow')}
+            </IonButton>
+            <IonButton size="small" fill="clear" color="medium" onClick={handleDismissRecurring}>
+              {tr('finance.recurring.processLater')}
+            </IonButton>
+          </div>
+        )}
 
         <div style={{ padding: '4px 16px' }}>
           <IonSegment value={period} onIonChange={(e) => setPeriod(e.detail.value as PeriodType)}>

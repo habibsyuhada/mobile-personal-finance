@@ -103,6 +103,11 @@ export class HabitService {
     return this.repo.logsForDate(date);
   }
 
+  /** Log check-in untuk hari ini (dipakai tombol "Mulai streak baru"). */
+  async logToday(habit: Habit): Promise<void> {
+    await this.repo.setLog(habit.id, localDateStr(), 1);
+  }
+
   /** Jadwalkan reminder harian untuk satu habit (cancel dulu yg lama). */
   async scheduleReminder(habit: Habit): Promise<void> {
     await Notifications.cancel(`habit:${habit.id}`);

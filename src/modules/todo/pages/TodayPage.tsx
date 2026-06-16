@@ -14,10 +14,11 @@ import {
   IonRefresher,
   IonRefresherContent,
   useIonAlert,
+  useIonToast,
 } from '@ionic/react';
-import { add, appsOutline } from 'ionicons/icons';
+import { add, appsOutline, calendarOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import { useTodoStore } from '../store/todo.store';
+import { useTodoStore, todoService } from '../store/todo.store';
 import type { Task, TaskFilter } from '../data/models';
 import TaskItem from '../components/TaskItem';
 import TaskForm from '../components/TaskForm';
@@ -36,9 +37,24 @@ export default function TodayPage() {
   const tr = useT();
   const history = useHistory();
   const [presentAlert] = useIonAlert();
+  const [presentToast] = useIonToast();
   const showCelebration = useCelebration((s) => s.show);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
+
+  const handlePostpone = async (task: Task) => {
+    haptics.medium();
+    const updated = await todoService().postpone(task, 1);
+    if (updated) {
+      presentToast({
+        message: tr('todo.postponed', { title: task.title }),
+        duration: 2500,
+        position: 'bottom',
+        icon: calendarOutline,
+      });
+      await loadTasks(FILTER);
+    }
+  };
 
   useEffect(() => {
     refreshLists();
@@ -101,6 +117,7 @@ export default function TodayPage() {
                   setFormOpen(true);
                 }}
                 onDelete={confirmDelete}
+                onPostpone={handlePostpone}
               />
             ))}
           </IonList>

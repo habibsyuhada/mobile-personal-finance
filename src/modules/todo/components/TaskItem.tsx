@@ -8,7 +8,7 @@ import {
   IonCheckbox,
   IonNote,
 } from '@ionic/react';
-import { trash, create as editIcon, star } from 'ionicons/icons';
+import { trash, create as editIcon, star, calendarOutline } from 'ionicons/icons';
 import type { Task } from '../data/models';
 import { useT } from '@/i18n/useT';
 import { formatDate } from '@/lib/date';
@@ -22,9 +22,10 @@ interface Props {
   onToggle: (t: Task) => void;
   onEdit: (t: Task) => void;
   onDelete: (t: Task) => void;
+  onPostpone?: (t: Task) => void;
 }
 
-export default function TaskItem({ task, onToggle, onEdit, onDelete }: Props) {
+export default function TaskItem({ task, onToggle, onEdit, onDelete, onPostpone }: Props) {
   const tr = useT();
   const locale = useSettingsStore((s) => s.locale);
 
@@ -100,6 +101,11 @@ export default function TaskItem({ task, onToggle, onEdit, onDelete }: Props) {
         )}
       </IonItem>
       <IonItemOptions side="end">
+        {onPostpone && task.dueAt && !task.completed && (
+          <IonItemOption color="primary" onClick={() => { haptics.tap(); onPostpone(task); }}>
+            <IonIcon slot="icon-only" icon={calendarOutline} />
+          </IonItemOption>
+        )}
         <IonItemOption onClick={() => { haptics.tap(); onEdit(task); }}>
           <IonIcon slot="icon-only" icon={editIcon} />
         </IonItemOption>
