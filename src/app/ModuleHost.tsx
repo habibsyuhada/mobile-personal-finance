@@ -18,6 +18,7 @@ import {
 } from '@/modules/finance/finance.tabs';
 import { TODO_TABS } from '@/modules/todo/todo.tabs';
 import { HABIT_TABS } from '@/modules/habit/habit.tabs';
+import { NOTES_TABS } from '@/modules/notes/notes.tabs';
 import type { ModuleTab } from './ModuleBottomNav';
 
 // Memuat modul berdasarkan :moduleId dari registry (lazy/code-split).
@@ -117,6 +118,9 @@ function pickModuleNav(moduleId: string): {
   }
   if (moduleId === 'habit') {
     return { tabs: HABIT_TABS, moreTabs: [], accentRgb: '245, 158, 11' };
+  }
+  if (moduleId === 'notes') {
+    return { tabs: NOTES_TABS, moreTabs: [], accentRgb: '16, 185, 129' };
   }
   return { tabs: [], moreTabs: [], accentRgb: '99, 102, 241' };
 }

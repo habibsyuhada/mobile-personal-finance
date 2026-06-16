@@ -17,15 +17,15 @@ memastikan arsitektur platform cukup umum untuk menampung beragam modul.
 | Modul | Status | Kompleksitas | Catatan |
 |---|---|---|---|
 | Keuangan (Finance) | Selesai (MVP) | L | Transaksi, akun, anggaran, scan struk AI |
-| Todo List | Direncanakan | M | Lihat `specs/todo` |
-| Habit Tracker | Direncanakan | M | Lihat `specs/habit-tracker` |
+| Todo List | Selesai (v1) | M | Lihat `specs/todo` |
+| Habit Tracker | Selesai (v1) | M | Lihat `specs/habit-tracker` |
+| Notes (Notion-style) | Direncanakan (spec siap) | L | Lihat `specs/notes` |
 
 ## Backlog kandidat (belum dispesifikasikan)
 
 | Modul | Kompleksitas | Nilai | Sinergi | Deskripsi singkat |
 |---|---|---|---|---|
-| Notes / Catatan | M | Tinggi | Todo, Habit | Catatan cepat, folder, pencarian, markdown ringan |
-| Journal / Diary | S–M | Sedang | Habit, Mood | Entri harian, mood, lampiran foto |
+| Journal / Diary | S–M | Sedang | Habit, Mood, Notes | Entri harian, mood, lampiran foto (bisa di atas Notes + database) |
 | Mood Tracker | S | Sedang | Habit, Journal | Catat suasana hati harian + grafik tren |
 | Reminders / Pengingat | M | Tinggi | Todo, Habit | Notifikasi terjadwal lokal |
 | Kalender / Agenda | L | Tinggi | Todo, Habit | Tampilan kalender menyatukan due-date modul lain |
@@ -45,12 +45,15 @@ memastikan arsitektur platform cukup umum untuk menampung beragam modul.
 
 ## Prioritas yang disarankan (setelah platform siap)
 
-1. **Todo List** — fondasi sederhana, sering dipakai, validasi arsitektur modul.
+1. **Todo List** — fondasi sederhana, sering dipakai, validasi arsitektur modul. ✅
 2. **Habit Tracker** — pola data berbeda (jadwal + log harian), menguji
-   fleksibilitas platform.
+   fleksibilitas platform. ✅
 3. **Reminders** — menambah kapabilitas notifikasi lokal yang dipakai banyak
-   modul lain (Todo due-date, Habit reminder).
-4. **Notes** — cepat dibangun, nilai harian tinggi.
+   modul lain (Todo due-date, Habit reminder). ✅ (sebagai layanan platform,
+   dipakai Todo & Habit)
+4. **Notes** — nilai harian tinggi, page tree & database jadi fondasi untuk
+   modul Journal/Diary/Password/Knowledge base di masa depan. Spec siap
+   (`specs/notes`); kompleksitas L karena block editor + database + search.
 5. **Calendar/Agenda** — agregator lintas modul; baru bernilai setelah beberapa
    modul punya tanggal (Todo due, Habit schedule).
 
@@ -61,7 +64,11 @@ memastikan arsitektur platform cukup umum untuk menampung beragam modul.
   tag) ke `src/lib/` agar modul berikutnya lebih cepat.
 - **Reminders/Notifications** sebaiknya jadi layanan platform (bukan modul biasa)
   karena dipakai lintas modul → tambahkan ke spec platform saat dibutuhkan
-  (kandidat plugin: `@capacitor/local-notifications`).
+  (kandidat plugin: `@capacitor/local-notifications`). ✅ Sudah ada, dipakai
+  Todo & Habit.
+- **Notes** dengan page tree + database akan jadi **fondasi** untuk modul
+  masa depan yang bersifat knowledge-base (Journal, Reading List, Bookmarks,
+  Inventory). Disarankan menjadi prioritas berikutnya setelah Todo & Habit.
 - Modul sensitif (**Password Vault**) butuh enkripsi at-rest; jangan dibangun
   sebelum ada strategi keamanan yang matang (selaras dengan catatan API key di
   spec keuangan).

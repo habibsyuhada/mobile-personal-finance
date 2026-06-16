@@ -16,6 +16,7 @@ import {
   walletOutline,
   checkboxOutline,
   flameOutline,
+  documentTextOutline,
 } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { enabledModules } from '@/platform/registry';
@@ -50,7 +51,7 @@ function formatLongDate(d: Date, locale: string): string {
 
 interface ModuleMeta {
   id: string;
-  descKey: 'launcher.module.finance.desc' | 'launcher.module.todo.desc' | 'launcher.module.habit.desc';
+  descKey: 'launcher.module.finance.desc' | 'launcher.module.todo.desc' | 'launcher.module.habit.desc' | 'launcher.module.notes.desc';
   icon: string;
 }
 
@@ -58,6 +59,7 @@ const MODULE_META: Record<string, ModuleMeta> = {
   finance: { id: 'finance', descKey: 'launcher.module.finance.desc', icon: walletOutline },
   todo: { id: 'todo', descKey: 'launcher.module.todo.desc', icon: checkboxOutline },
   habit: { id: 'habit', descKey: 'launcher.module.habit.desc', icon: flameOutline },
+  notes: { id: 'notes', descKey: 'launcher.module.notes.desc', icon: documentTextOutline },
 };
 
 export default function Launcher() {

@@ -847,6 +847,9 @@ html[data-module='habit'] {
 html[data-module='todo'] {
   --module-accent-rgb: 14, 165, 233;
 }
+html[data-module='notes'] {
+  --module-accent-rgb: 16, 185, 129;
+}
 
 html[data-module] ion-toolbar {
   --background: linear-gradient(
